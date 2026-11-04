@@ -1,0 +1,17 @@
+
+Convert the following structured text into a json list. Remember to use a list format not a dictionary format. So each action should be a list item with the title, timestamp, action description, and other important information.
+{actions_split_text}
+
+Here is an example of the output format:
+[
+    {{
+        "title": "Initial Access",
+        "timestamp": "2024-08-05 11:00:00",
+        "action": "Used access broker's notes to obtain a reverse shell on DMZ host 172.16.2.102 through SSH keys of it-admin.",
+        "end_timestamp": "2024-08-05 11:00:00"
+    }},
+    ...
+]
+Note: The above example is for illustration purposes only. It is not relevant to the current input you are given.
+If end_timestamp is not mentioned, keep it null.
+Answer in json format only. No additional text or formatting. In your output do not include any indication to show json, just write the content in the right format such that it can be used by json.loads()

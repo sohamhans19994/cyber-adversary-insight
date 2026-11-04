@@ -1,0 +1,219 @@
+{
+  "MITRE Category": "Impact",
+  "Description": "The adversary is trying to manipulate, interrupt, or destroy your systems and data. Impact consists of techniques that adversaries use to disrupt availability or compromise integrity by manipulating business and operational processes. Techniques used for impact can include destroying or tampering with data. In some cases, business processes can look fine, but may have been altered to benefit the adversaries’ goals. These techniques might be used by adversaries to follow through on their end goal or to provide cover for a confidentiality breach.",
+  "Category ID": "TA0040",
+  "techniques" : [
+    {
+      "id": "T1531",
+      "name": "Account Access Removal",
+      "url": "/techniques/T1531",
+      "description": "Adversaries may interrupt availability of system and network resources by inhibiting access to accounts utilized by legitimate users. Accounts may be deleted, locked, or manipulated (ex: changed credentials) to remove access to accounts. Adversaries may also subsequently log off and/or perform a [System Shutdown/Reboot](/techniques/T1529) to set malicious changes into place."
+    },
+    {
+      "id": "T1485",
+      "name": "Data Destruction",
+      "url": "/techniques/T1485",
+      "description": "Adversaries may destroy data and files on specific systems or in large numbers on a network to interrupt availability to systems, services, and network resources. Data destruction is likely to render stored data irrecoverable by forensic techniques through overwriting files or data on local and remote drives. Common operating system file deletion commands such as del and rm often only remove pointers to files without wiping the contents of the files themselves, making the files recoverable by proper forensic methodology. This behavior is distinct from [Disk Content Wipe](/techniques/T1561/001) and [Disk Structure Wipe](/techniques/T1561/002) because individual files are destroyed rather than sections of a storage disk or the disk's logical structure.",
+      "subtechniques": [
+        {
+          "id": "T1485.001",
+          "name": "Lifecycle-Triggered Deletion",
+          "url": "/techniques/T1485/001",
+          "description": "Adversaries may modify the lifecycle policies of a cloud storage bucket to destroy all objects stored within."
+        }
+      ]
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "url": "/techniques/T1486",
+      "description": "Adversaries may encrypt data on target systems or on large numbers of systems in a network to interrupt availability to system and network resources. They can attempt to render stored data inaccessible by encrypting files or data on local and remote drives and withholding access to a decryption key. This may be done in order to extract monetary compensation from a victim in exchange for decryption or a decryption key (ransomware) or to render data permanently inaccessible in cases where the key is not saved or transmitted."
+    },
+    {
+      "id": "T1565",
+      "name": "Data Manipulation",
+      "url": "/techniques/T1565",
+      "description": "Adversaries may insert, delete, or manipulate data in order to influence external outcomes or hide activity, thus threatening the integrity of the data. By manipulating data, adversaries may attempt to affect a business process, organizational understanding, or decision making.",
+      "subtechniques": [
+        {
+          "id": "T1565.001",
+          "name": "Stored Data Manipulation",
+          "url": "/techniques/T1565/001",
+          "description": "Adversaries may insert, delete, or manipulate data at rest in order to influence external outcomes or hide activity, thus threatening the integrity of the data. By manipulating stored data, adversaries may attempt to affect a business process, organizational understanding, and decision making."
+        },
+        {
+          "id": "T1565.002",
+          "name": "Transmitted Data Manipulation",
+          "url": "/techniques/T1565/002",
+          "description": "Adversaries may alter data en route to storage or other systems in order to manipulate external outcomes or hide activity, thus threatening the integrity of the data. By manipulating transmitted data, adversaries may attempt to affect a business process, organizational understanding, and decision making."
+        },
+        {
+          "id": "T1565.003",
+          "name": "Runtime Data Manipulation",
+          "url": "/techniques/T1565/003",
+          "description": "Adversaries may modify systems in order to manipulate the data as it is accessed and displayed to an end user, thus threatening the integrity of the data. By manipulating runtime data, adversaries may attempt to affect a business process, organizational understanding, and decision making."
+        }
+      ]
+    },
+    {
+      "id": "T1491",
+      "name": "Defacement",
+      "url": "/techniques/T1491",
+      "description": "Adversaries may modify visual content available internally or externally to an enterprise network, thus affecting the integrity of the original content. Reasons for Defacement include delivering messaging, intimidation, or claiming (possibly false) credit for an intrusion. Disturbing or offensive images may be used as a part of Defacement in order to cause user discomfort, or to pressure compliance with accompanying messages.",
+      "subtechniques": [
+        {
+          "id": "T1491.001",
+          "name": "Internal Defacement",
+          "url": "/techniques/T1491/001",
+          "description": "An adversary may deface systems internal to an organization in an attempt to intimidate or mislead users, thus discrediting the integrity of the systems. This may take the form of modifications to internal websites or server login messages, or directly to user systems with the replacement of the desktop wallpaper. Disturbing or offensive images may be used as a part of Internal Defacement in order to cause user discomfort, or to pressure compliance with accompanying messages. Since internally defacing systems exposes an adversary's presence, it often takes place after other intrusion goals have been accomplished."
+        },
+        {
+          "id": "T1491.002",
+          "name": "External Defacement",
+          "url": "/techniques/T1491/002",
+          "description": "An adversary may deface systems external to an organization in an attempt to deliver messaging, intimidate, or otherwise mislead an organization or users. External Defacement may ultimately cause users to distrust the systems and to question/discredit the system’s integrity. Externally-facing websites are a common victim of defacement; often targeted by adversary and hacktivist groups in order to push a political message or spread propaganda. External Defacement may be used as a catalyst to trigger events, or as a response to actions taken by an organization or government. Similarly, website defacement may also be used as setup, or a precursor, for future attacks such as [Drive-by Compromise](/techniques/T1189)."
+        }
+      ]
+    },
+    {
+      "id": "T1561",
+      "name": "Disk Wipe",
+      "url": "/techniques/T1561",
+      "description": "Adversaries may wipe or corrupt raw disk data on specific systems or in large numbers in a network to interrupt availability to system and network resources. With direct write access to a disk, adversaries may attempt to overwrite portions of disk data. Adversaries may opt to wipe arbitrary portions of disk data and/or wipe disk structures like the master boot record (MBR). A complete wipe of all disk sectors may be attempted.",
+      "subtechniques": [
+        {
+          "id": "T1561.001",
+          "name": "Disk Content Wipe",
+          "url": "/techniques/T1561/001",
+          "description": "Adversaries may erase the contents of storage devices on specific systems or in large numbers in a network to interrupt availability to system and network resources."
+        },
+        {
+          "id": "T1561.002",
+          "name": "Disk Structure Wipe",
+          "url": "/techniques/T1561/002",
+          "description": "Adversaries may corrupt or wipe the disk data structures on a hard drive necessary to boot a system; targeting specific critical systems or in large numbers in a network to interrupt availability to system and network resources."
+        }
+      ]
+    },
+    {
+      "id": "T1667",
+      "name": "Email Bombing",
+      "url": "/techniques/T1667",
+      "description": "Adversaries may flood targeted email addresses with an overwhelming volume of messages. This may bury legitimate emails in a flood of spam and disrupt business operations."
+    },
+    {
+      "id": "T1499",
+      "name": "Endpoint Denial of Service",
+      "url": "/techniques/T1499",
+      "description": "Adversaries may perform Endpoint Denial of Service (DoS) attacks to degrade or block the availability of services to users. Endpoint DoS can be performed by exhausting the system resources those services are hosted on or exploiting the system to cause a persistent crash condition. Example services include websites, email services, DNS, and web-based applications. Adversaries have been observed conducting DoS attacks for political purposes and to support other malicious activities, including distraction, hacktivism, and extortion.",
+      "subtechniques": [
+        {
+          "id": "T1499.001",
+          "name": "OS Exhaustion Flood",
+          "url": "/techniques/T1499/001",
+          "description": "Adversaries may launch a denial of service (DoS) attack targeting an endpoint's operating system (OS). A system's OS is responsible for managing the finite resources as well as preventing the entire system from being overwhelmed by excessive demands on its capacity. These attacks do not need to exhaust the actual resources on a system; the attacks may simply exhaust the limits and available resources that an OS self-imposes."
+        },
+        {
+          "id": "T1499.002",
+          "name": "Service Exhaustion Flood",
+          "url": "/techniques/T1499/002",
+          "description": "Adversaries may target the different network services provided by systems to conduct a denial of service (DoS). Adversaries often target the availability of DNS and web services, however others have been targeted as well. Web server software can be attacked through a variety of means, some of which apply generally while others are specific to the software being used to provide the service."
+        },
+        {
+          "id": "T1499.003",
+          "name": "Application Exhaustion Flood",
+          "url": "/techniques/T1499/003",
+          "description": "Adversaries may target resource intensive features of applications to cause a denial of service (DoS), denying availability to those applications. For example, specific features in web applications may be highly resource intensive. Repeated requests to those features may be able to exhaust system resources and deny access to the application or the server itself."
+        },
+        {
+          "id": "T1499.004",
+          "name": "Application or System Exploitation",
+          "url": "/techniques/T1499/004",
+          "description": "Adversaries may exploit software vulnerabilities that can cause an application or system to crash and deny availability to users.  Some systems may automatically restart critical applications and services when crashes occur, but they can likely be re-exploited to cause a persistent denial of service (DoS) condition."
+        }
+      ]
+    },
+    {
+      "id": "T1657",
+      "name": "Financial Theft",
+      "url": "/techniques/T1657",
+      "description": "Adversaries may steal monetary resources from targets through extortion, social engineering, technical theft, or other methods aimed at their own financial gain at the expense of the availability of these resources for victims. Financial theft is the ultimate objective of several popular campaign types including extortion by ransomware, business email compromise (BEC) and fraud, \"pig butchering,\" bank hacking, and exploiting cryptocurrency networks."
+    },
+    {
+      "id": "T1495",
+      "name": "Firmware Corruption",
+      "url": "/techniques/T1495",
+      "description": "Adversaries may overwrite or corrupt the flash memory contents of system BIOS or other firmware in devices attached to a system in order to render them inoperable or unable to boot, thus denying the availability to use the devices and/or the system. Firmware is software that is loaded and executed from non-volatile memory on hardware devices in order to initialize and manage device functionality. These devices may include the motherboard, hard drive, or video cards."
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "url": "/techniques/T1490",
+      "description": "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery. This may deny access to available backups and recovery options."
+    },
+    {
+      "id": "T1498",
+      "name": "Network Denial of Service",
+      "url": "/techniques/T1498",
+      "description": "Adversaries may perform Network Denial of Service (DoS) attacks to degrade or block the availability of targeted resources to users. Network DoS can be performed by exhausting the network bandwidth services rely on. Example resources include specific websites, email services, DNS, and web-based applications. Adversaries have been observed conducting network DoS attacks for political purposes and to support other malicious activities, including distraction, hacktivism, and extortion.",
+      "subtechniques": [
+        {
+          "id": "T1498.001",
+          "name": "Direct Network Flood",
+          "url": "/techniques/T1498/001",
+          "description": "Adversaries may attempt to cause a denial of service (DoS) by directly sending a high-volume of network traffic to a target. This DoS attack may also reduce the availability and functionality of the targeted system(s) and network. Direct Network Floods are when one or more systems are used to send a high-volume of network packets towards the targeted service's network. Almost any network protocol may be used for flooding. Stateless protocols such as UDP or ICMP are commonly used but stateful protocols such as TCP can be used as well."
+        },
+        {
+          "id": "T1498.002",
+          "name": "Reflection Amplification",
+          "url": "/techniques/T1498/002",
+          "description": "Adversaries may attempt to cause a denial of service (DoS) by reflecting a high-volume of network traffic to a target. This type of Network DoS takes advantage of a third-party server intermediary that hosts and will respond to a given spoofed source IP address. This third-party server is commonly termed a reflector. An adversary accomplishes a reflection attack by sending packets to reflectors with the spoofed address of the victim. Similar to Direct Network Floods, more than one system may be used to conduct the attack, or a botnet may be used. Likewise, one or more reflectors may be used to focus traffic on the target. This Network DoS attack may also reduce the availability and functionality of the targeted system(s) and network."
+        }
+      ]
+    },
+    {
+      "id": "T1496",
+      "name": "Resource Hijacking",
+      "url": "/techniques/T1496",
+      "description": "Adversaries may leverage the resources of co-opted systems to complete resource-intensive tasks, which may impact system and/or hosted service availability.",
+      "subtechniques": [
+        {
+          "id": "T1496.001",
+          "name": "Compute Hijacking",
+          "url": "/techniques/T1496/001",
+          "description": "Adversaries may leverage the compute resources of co-opted systems to complete resource-intensive tasks, which may impact system and/or hosted service availability."
+        },
+        {
+          "id": "T1496.002",
+          "name": "Bandwidth Hijacking",
+          "url": "/techniques/T1496/002",
+          "description": "Adversaries may leverage the network bandwidth resources of co-opted systems to complete resource-intensive tasks, which may impact system and/or hosted service availability."
+        },
+        {
+          "id": "T1496.003",
+          "name": "SMS Pumping",
+          "url": "/techniques/T1496/003",
+          "description": "Adversaries may leverage messaging services for SMS pumping, which may impact system and/or hosted service availability. SMS pumping is a type of telecommunications fraud whereby a threat actor first obtains a set of phone numbers from a telecommunications provider, then leverages a victim’s messaging infrastructure to send large amounts of SMS messages to numbers in that set. By generating SMS traffic to their phone number set, a threat actor may earn payments from the telecommunications provider."
+        },
+        {
+          "id": "T1496.004",
+          "name": "Cloud Service Hijacking",
+          "url": "/techniques/T1496/004",
+          "description": "Adversaries may leverage compromised software-as-a-service (SaaS) applications to complete resource-intensive tasks, which may impact hosted service availability."
+        }
+      ]
+    },
+    {
+      "id": "T1489",
+      "name": "Service Stop",
+      "url": "/techniques/T1489",
+      "description": "Adversaries may stop or disable services on a system to render those services unavailable to legitimate users. Stopping critical services or processes can inhibit or stop response to an incident or aid in the adversary's overall objectives to cause damage to the environment."
+    },
+    {
+      "id": "T1529",
+      "name": "System Shutdown/Reboot",
+      "url": "/techniques/T1529",
+      "description": "Adversaries may shutdown/reboot systems to interrupt access to, or aid in the destruction of, those systems. Operating systems may contain commands to initiate a shutdown/reboot of a machine or network device. In some cases, these commands may also be used to initiate a shutdown/reboot of a remote computer or network device via [Network Device CLI](/techniques/T1059/008) (e.g. reload). They may also include shutdown/reboot of a virtual machine via hypervisor / cloud consoles or command line tools."
+    }
+  ]
+}

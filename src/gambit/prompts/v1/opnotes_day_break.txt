@@ -1,0 +1,17 @@
+
+For given set of timestamps in a document, determine if there is a day break. Basically predict if the user worked for 2 days, when they stopped working for the first day, and started working for the second day.
+For example, usually the timestamps will end for the first date, and start again for the next date. 
+However, sometimes the user might continue working past midnight of the first day, then take a long break and start working later in the second day, in this case, the first day end would be within the second date's early morning.
+
+Most of the time a day break will be longer than 6 hours.
+
+{timestamps_list}
+
+Answer the following in json format:
+day_break: whether or not there is a day break.
+day_break_reasoning: the reasoning behind the answer.
+
+first_day_end_timestamp: the timestamp of the end of the first day. (This will be null if there is no day break), format: %Y-%m-%d %H:%M:%S
+second_day_start_timestamp: the timestamp of the start of the second day. (This will be null if there is no day break), format: %Y-%m-%d %H:%M:%S
+
+Answer in json format only. No additional text or formatting.

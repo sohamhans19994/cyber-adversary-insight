@@ -1,0 +1,12 @@
+
+For the given action taken by a white hat hacker in accessing a network, 
+
+{action}
+
+Answer the following using a json format:
+Is_Exfiltration: whether or not the action taken corresponds to an exfiltration technique.
+Exfiltration_technique_ID: the ID of the exfiltration technique that corresponds to the action taken. This will be null if the action does not correspond to an exfiltration technique.
+Exfiltration_technique_name: the name of the exfiltration technique that corresponds to the action taken. This will be null if the action does not correspond to an exfiltration technique.
+Reasoning: the reasoning behind the answer.
+
+Answer in json format only. No additional text or formatting.

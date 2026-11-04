@@ -1,0 +1,12 @@
+
+For the given action taken by a white hat hacker in accessing a network, 
+
+{action}
+
+Answer the following using a json format:
+Is_Command_and_Control: whether or not the action taken corresponds to a command and control technique.
+Command_and_Control_technique_ID: the ID of the command and control technique that corresponds to the action taken. This will be null if the action does not correspond to a command and control technique.
+Command_and_Control_technique_name: the name of the command and control technique that corresponds to the action taken. This will be null if the action does not correspond to a command and control technique.
+Reasoning: the reasoning behind the answer.
+
+Answer in json format only. No additional text or formatting.

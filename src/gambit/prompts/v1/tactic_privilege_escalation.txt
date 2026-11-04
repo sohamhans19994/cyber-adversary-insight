@@ -1,0 +1,12 @@
+
+For the given action taken by a white hat hacker in accessing a network, 
+
+{action}
+
+Answer the following using a json format:
+Is_Privilege_Escalation: whether or not the action taken corresponds to a privilege escalation technique.
+Privilege_Escalation_technique_ID: the ID of the privilege escalation technique that corresponds to the action taken. This will be null if the action does not correspond to a privilege escalation technique.
+Privilege_Escalation_technique_name: the name of the privilege escalation technique that corresponds to the action taken. This will be null if the action does not correspond to a privilege escalation technique.
+Reasoning: the reasoning behind the answer.
+
+Answer in json format only. No additional text or formatting.

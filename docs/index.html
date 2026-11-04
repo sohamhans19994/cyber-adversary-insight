@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cyber Adversary Insights — Concept Walkthrough</title>
+  <style>
+    :root{
+      --bg:#0b1020;--panel:#10162a;--muted:#778;--text:#eef2ff;--accent:#7c97ff;--accent2:#7cffc4;--danger:#ff6b6b;--ok:#5eead4;
+      --card:#0f1528;--button:#1a2140;--button-hover:#222a52;--border:#243155;--shadow:0 10px 24px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",sans-serif;
+      color:var(--text);background:radial-gradient(1200px 600px at 10% -20%, #182044, transparent),
+              radial-gradient(1200px 600px at 110% 120%, #00122e, transparent),var(--bg);
+      display:flex;flex-direction:column;
+    }
+    header{
+      display:flex;align-items:center;gap:.75rem; padding:14px 20px;border-bottom:1px solid var(--border);
+      background:rgba(11,16,32,.98);
+      position:sticky;top:0;z-index:10;
+    }
+    header .brand{font-size:1.05rem;margin:0;letter-spacing:.2px;font-weight:700}
+    header .pill{border:1px solid var(--border); padding:.25rem .5rem; border-radius:999px;color:var(--muted)}
+    .hero-wrap{max-width:1200px;width:100%;margin:0 auto;padding:18px 16px 0 16px}
+    .hero h1{margin:0;font-size:1.7rem;letter-spacing:.2px;text-align:center}
+    .hero-lead{margin-top:8px;color:var(--muted);text-align:center;margin-left:auto;margin-right:auto;max-width:100%}
+    .hero-box{margin-top:14px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px}
+    .hero-box h2{margin:0 0 8px 0;font-size:1rem}
+    .hero-box p{margin:0;color:var(--text)}
+    .hero-cite{margin-top:10px;color:var(--muted);font-size:.9rem}
+    .hero-how{margin-top:14px}
+    .hero-how h2{margin:0 0 8px 0;font-size:1rem}
+    .hero-how p{margin:0;color:var(--muted);max-width:none}
+    @media (min-width:900px){.hero-lead{white-space:nowrap}}
+    @media (max-width:899px){.hero-lead{white-space:normal}}
+    main{display:grid;grid-template-columns:minmax(420px, 460px) 1fr;gap:16px;padding:16px;max-width:1200px;width:100%;margin:0 auto;flex:1;width:100%}
+    aside, section{background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
+    aside{padding:14px;display:flex;flex-direction:column;gap:12px}
+    .metrics{display:grid;grid-template-columns:1fr;gap:8px}
+    .metric{background:var(--card);border:1px solid var(--border);padding:10px;border-radius:14px}
+    .metric .label{font-size:.8rem;color:var(--muted)}
+    .metric .value{font-size:1.2rem;margin-top:2px}
+    .bar{height:10px;background:#0b1533;border-radius:999px;overflow:hidden;border:1px solid var(--border)}
+    .bar>i{height:100%;display:block;background:linear-gradient(90deg,var(--accent),var(--danger));width:0%}
+    .legend{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:.8rem}
+    .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent)}
+    .legend i.danger{background:var(--danger)}
+
+    section{padding:16px;display:flex;flex-direction:column}
+    .stage-header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px 0}
+    .stage-header h2{margin:0;font-size:1.2rem}
+    .sofar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .sofar-meta{margin-top:8px}
+    .narrative{margin:0 0 12px 0;padding:0;border:0;border-radius:0;background:transparent}
+    .narrative .muted{display:block;margin-top:6px}
+    .nextlabel{color:var(--text);font-weight:800}
+    .breadcrumbs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+    .crumb{padding:.25rem .5rem;border:1px solid var(--border);border-radius:999px;background:var(--card);font-size:.8rem;color:var(--muted)}
+    .trailbtn{
+      display:inline-flex;align-items:center;gap:.4rem;
+      padding:.25rem .55rem;border:1px solid var(--border);border-radius:999px;
+      background:transparent;color:var(--text);cursor:pointer;font-size:.85rem;
+    }
+    .trailbtn:hover{background:rgba(255,255,255,.05)}
+    .trailmeta{color:var(--muted);font-size:.8rem}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1000}
+    .modal.open{display:flex}
+    .modal .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+    .modal .dialog{
+      position:relative;z-index:1;max-width:min(680px, calc(100vw - 32px));
+      background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);
+      padding:14px 14px 12px 14px;
+    }
+    .modal .dialog h4{margin:0 0 8px 0;font-size:1.05rem}
+    .modal .row{margin-top:8px}
+    .modal .close{
+      position:absolute;top:10px;right:10px;
+      width:34px;height:34px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:transparent;border:1px solid var(--border);color:var(--text);cursor:pointer;
+    }
+    .modal .close:hover{background:rgba(255,255,255,.05)}
+
+    .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:8px}
+    .option{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+    .option h3{margin:0 0 4px 0;font-size:1rem}
+    .chips{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{font-size:.75rem;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);color:var(--muted)}
+    .actions{margin-top:auto;display:flex;gap:8px}
+    button{appearance:none;background:var(--button);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;border-radius:12px;cursor:pointer}
+    button:hover{background:var(--button-hover)}
+    button.primary{background:linear-gradient(180deg,#2a3a86,#1b265e);border-color:#2a3a86}
+    button.ghost{background:transparent}
+
+    .log{margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    .log h4{margin:0;padding:10px 12px;border-bottom:1px solid var(--border);font-size:.95rem}
+    .loglist{max-height:240px;overflow:auto;padding:6px 0}
+    .entry{padding:8px 12px;border-bottom:1px dashed rgba(255,255,255,.06)}
+    .entry:last-child{border-bottom:0}
+    .entry .time{color:var(--muted);font-size:.75rem}
+
+    .footer{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .muted{color:var(--muted)}
+    .kbd{font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;color:#ddd;background:#0b0f1e;border:1px solid var(--border);padding:.1rem .35rem;border-radius:6px}
+    .preview{margin-top:8px;padding:8px;border:1px dashed var(--border);border-radius:8px;background:rgba(255,255,255,.03);color:var(--muted);font-size:.9rem}
+    .logline{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;color:#cfd3e6}
+    .logs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    @media (max-width:900px){.logs-grid{grid-template-columns:1fr}}
+
+    .detection-section{margin-top:16px;padding:14px;border:1px solid var(--border);border-radius:18px;background:rgba(255,255,255,.02)}
+    .section-divider{
+      display:flex;align-items:center;gap:12px;margin:0 0 10px 0;
+      color:var(--text);font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+      font-size:.85rem;
+    }
+    .section-divider::before,.section-divider::after{
+      content:"";flex:1;height:1px;background:var(--border);
+    }
+
+    @media (max-width:900px){main{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Cyber Adversary Insights</div>
+    <span class="pill">Suricata → ATT&amp;CK</span>
+  </header>
+  <div class="hero-wrap" aria-label="Overview">
+    <div class="hero">
+      <h1>From Security Logs to ATT&amp;CK Insight</h1>
+      <div class="hero-lead">
+        Follow a synthetic attacker path from network events to behavioral interpretation.
+      </div>
+
+      <div class="hero-box" aria-label="Abstract and reference">
+        <h2>Research idea</h2>
+        <p>
+          Intrusion-detection logs describe <span class="kbd">what happened</span>, but not necessarily <span class="kbd">what it means</span>.
+          This walkthrough illustrates the research abstraction from synthetic Suricata events to attacker actions and ATT&amp;CK context. Exposure and objective artifacts are lightweight scenario mechanics for following the selected path.
+        </p>
+        <div class="hero-cite">
+          Based on “Security Logs to ATT&amp;CK Insights: Leveraging LLMs for High-Level Threat Understanding and Cognitive Trait Inference.”
+        </div>
+      </div>
+
+      <div class="hero-how" aria-label="How to explore this walkthrough">
+        <h2>How to explore it</h2>
+        <p>
+          Choose one synthetic action at each stage. The panels below reveal the corresponding example events, an illustrative behavioral interpretation, and relevant ATT&amp;CK context as the scenario develops.
+        </p>
+      </div>
+    </div>
+  </div>
+  <main>
+    <aside aria-label="Status">
+      <div class="metric" aria-live="polite">
+        <div class="label">So far</div>
+        <div id="soFarLeft" class="sofar" aria-label="So far"></div>
+        <div id="soFarLeftMeta" class="muted sofar-meta"></div>
+      </div>
+      <div class="metric" style="margin-top:8px" aria-live="polite">
+        <div class="label">Scenario exposure</div>
+        <div class="bar" aria-label="Exposure meter"><i id="noiseBar"></i></div>
+        <div class="legend" style="margin-top:6px"><i></i> low <span style="margin:0 6px">→</span> <i class="danger"></i> high</div>
+      </div>
+      <div class="metric" style="margin-top:8px" aria-live="polite">
+        <div class="label">Objective artifacts</div>
+        <div class="value" id="lootCount">0 items</div>
+        <div id="lootItems" class="preview" aria-label="Objective artifacts">—</div>
+      </div>
+      <div class="footer">
+        <button id="btnRestart" title="Restart (R)">Restart</button>
+      </div>
+    </aside>
+
+    <section aria-live="polite" aria-label="Scenario">
+      <div class="stage-header">
+        <h2 id="stageTitle">Loading…</h2>
+      </div>
+      <div id="narrative" class="narrative" aria-live="polite"></div>
+      <div class="options" id="options" role="group" aria-label="Available actions"></div>
+      <div class="detection-section" aria-label="Illustrative pipeline view">
+        <div class="section-divider"><span>Illustrative Pipeline View</span></div>
+        <div class="logs-grid" aria-label="Outputs">
+          <div class="log" aria-label="Synthetic Suricata events">
+            <h4>Synthetic Suricata Events</h4>
+            <div id="suricataLog" class="loglist"></div>
+          </div>
+          <div class="log" aria-label="Illustrative actions">
+            <h4>Illustrative Actions</h4>
+            <div id="actionsLog" class="loglist" tabindex="0"></div>
+          </div>
+        </div>
+        <div class="log" aria-label="ATT&CK context" style="margin-top:12px">
+          <h4>ATT&amp;CK Context</h4>
+          <div id="mitreLog" class="loglist"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // --- Scenario Definition ---
+    // A tiny finite-state adventure. Each stage maps to an ATT&CK tactic label
+    // and presents 2–3 simplified technique-like choices.
+    const SCENARIO = {
+      start: 'recon',
+      stages: {
+        recon: {
+          title: 'External Reconnaissance',
+          tactic: 'TA0043 – Reconnaissance',
+          guidance: 'You are mapping the external surface. Look for entry points (open ports, vulnerable services, or usable credentials) while keeping noise low.',
+          options: [
+            {
+              id: 'scan-ports', label: 'Scan for open ports', chips: ['T1595','Network'],
+              desc: 'Quickly check which services are open on the target to find ways in. This is noisy on the network and may show up in logs.',
+              delta: { noise:+15 },
+              log: 'Scanned top 1000 TCP ports; 443/8443 open.',
+              suricataLogs: [
+                {cat:'Web Application Attack', sig:'ET SCAN Nmap Scripting Engine User-Agent Detected', sid:'2009358', proto:'TCP', src:'172.16.1.50', spt:50312, dst:'172.16.2.7', dpt:443},
+                {cat:'Attempted Information Leak', sig:'ET SCAN Potential SSH Scan', sid:'2001219', proto:'TCP', src:'172.16.1.50', spt:50318, dst:'172.16.2.7', dpt:22}
+              ],
+              next: 'initial-access'
+            },
+            {
+              id: 'harvest-creds', label: 'Harvest leaked creds', chips: ['T1589','Open Source'],
+              desc: 'Search public leaks and paste sites for usernames/passwords to try later. Quiet approach; no direct contact with the target.',
+              delta: { noise:+5, loot:+1 },
+              lootItems: ['Leaked credentials'],
+              log: 'Found possible employee password on paste site.',
+              suricataLogs: [
+                {cat:'Info', sig:'Off-network OSINT activity (no IDS alert)', src:'-', spt:'-', dst:'-', dpt:'-'}
+              ],
+              next: 'initial-access'
+            },
+            {
+              id: 'phish-list', label: 'Compile spearphish targets', chips: ['T1598','Email'],
+              desc: 'Gather names and emails to send convincing phishing messages. Prep step for social engineering.',
+              delta: { noise:+8 },
+              log: 'Built a list of 12 targets for phishing.',
+              suricataLogs: [
+                {cat:'Info', sig:'Preparation step (no network IDS alert)', src:'-', spt:'-', dst:'-', dpt:'-'}
+              ],
+              next: 'initial-access'
+            },
+          ]
+        },
+        'initial-access': {
+          title: 'Initial Access',
+          tactic: 'TA0001 – Initial Access',
+          guidance: 'Your goal is a foothold. Choose a path to get in (phish, credentials, or exploit) and think about reducing detection.',
+          options: [
+            {
+              id: 'phish-macro', label: 'Phish with macro doc', chips:['T1566.001','Email'],
+              desc: 'Send a document with a malicious macro that runs when opened. Can work well but has higher chance of being detected.',
+              delta:{ noise:+20 },
+              log: 'Two users opened a macro-enabled document.',
+              suricataLogs: [
+                {cat:'Malware Activity', sig:'ET MALWARE Office Macro Payload Download', sid:'2034567', proto:'TCP', src:'172.16.2.101', spt:51744, dst:'93.184.216.34', dpt:443},
+                {cat:'Potentially Bad Traffic', sig:'ET POLICY Suspicious Macro-Like Traffic', sid:'2012345', proto:'TCP', src:'172.16.2.101', spt:51752, dst:'93.184.216.34', dpt:443}
+              ],
+              next: 'execution'
+            },
+            {
+              id: 'spray-vpn', label: 'Password-spray VPN', chips:['T1110.003','Credentials'],
+              desc: 'Try common passwords across many accounts on the VPN portal. Risk of alerts or account lockouts.',
+              delta:{ noise:+12 },
+              log: 'Password spray yielded one valid account.',
+              suricataLogs: [
+                {cat:'Policy', sig:'ET POLICY Multiple Auth Failures to VPN', sid:'2022333', proto:'TCP', src:'172.16.1.77', spt:51402, dst:'172.16.2.200', dpt:443},
+                {cat:'Attempted Admin', sig:'ET SCAN Brute Force Authentication Attempt', sid:'2009088', proto:'TCP', src:'172.16.1.77', spt:51410, dst:'172.16.2.200', dpt:443}
+              ],
+              next: 'execution'
+            },
+            {
+              id: 'exploit-web', label: 'Exploit web service', chips:['T1190','443/HTTPS'],
+              desc: 'Use a known vulnerability in a web app/service to gain a shell. Requires an outdated or misconfigured component.',
+              delta:{ noise:+10, loot:+1 },
+              lootItems: ['Initial shell / web foothold'],
+              log: 'Exploited outdated plugin; got low-priv shell.',
+              suricataLogs: [
+                {cat:'Web Application Attack', sig:'ET WEB_SERVER Possible Exploit Attempt Detected', sid:'2010922', proto:'TCP', src:'172.16.1.60', spt:50533, dst:'172.16.2.20', dpt:443},
+                {cat:'Web Application Attack', sig:'ET WEB_APPLICATION Suspicious HTTP Parameter', sid:'2010233', proto:'TCP', src:'172.16.1.60', spt:50534, dst:'172.16.2.20', dpt:443}
+              ],
+              next: 'execution'
+            },
+          ]
+        },
+        execution: {
+          title: 'Execution & Privilege Escalation',
+          tactic: 'TA0002/TA0004 – Execution / PrivEsc',
+          guidance: 'Stabilize and strengthen access. Execute needed commands and raise privileges while watching for alerts.',
+          options: [
+            {
+              id: 'ps-encode', label: 'Run encoded PowerShell', chips:['T1059.001','Windows'],
+              desc: 'Run obfuscated PowerShell to bypass defenses and execute commands. Useful but often monitored.',
+              delta:{ noise:+18 },
+              log: 'Spawned PowerShell; AMSI bypass attempted.',
+              suricataLogs: [
+                {cat:'Trojan Activity', sig:'ET POLICY Powershell Command With NonInteractive Argument Over SMB', sid:'2025724', proto:'TCP', src:'172.16.2.55', spt:49312, dst:'172.16.2.5', dpt:445},
+                {cat:'Policy', sig:'ET POLICY Encoded PowerShell Command Observed', sid:'2031122', proto:'TCP', src:'172.16.2.55', spt:49318, dst:'172.16.2.5', dpt:445}
+              ],
+              next: 'internal-discovery'
+            },
+            {
+              id: 'abuse-sudo', label: 'Abuse sudo misconfig', chips:['T1068','Linux'],
+              desc: 'Use a misconfigured sudo rule to run commands as admin. Fast path to higher privileges.',
+              delta:{ noise:+8, loot:+1 },
+              lootItems: ['Elevated privileges (root/admin)'],
+              log: 'Escalated via misconfigured sudoers.',
+              suricataLogs: [
+                {cat:'Info', sig:'Host privilege escalation (no network IDS alert)', src:'-', spt:'-', dst:'-', dpt:'-'}
+              ],
+              next: 'internal-discovery'
+            },
+            {
+              id: 'token-theft', label: 'Steal access token', chips:['T1134','Tokens'],
+              desc: 'Capture an access token to impersonate a user or service without needing their password.',
+              delta:{ noise:+10, loot:+1 },
+              lootItems: ['Stolen service access token'],
+              log: 'Stole service token for backend API.',
+              suricataLogs: [
+                {cat:'Info', sig:'Credential artifact acquired (no immediate IDS alert)', src:'-', spt:'-', dst:'-', dpt:'-'},
+                {cat:'Info', sig:'Subsequent use may trigger anomalous access alerts', src:'-', spt:'-', dst:'-', dpt:'-'}
+              ],
+              next: 'internal-discovery'
+            },
+          ]
+        },
+        'internal-discovery': {
+          title: 'Internal Discovery & Movement',
+          tactic: 'TA0007/TA0008 – Discovery / Lateral Movement',
+          guidance: 'Learn the lay of the land. Enumerate shares, systems, and pathways to move toward valuable targets.',
+          options: [
+            {
+              id: 'list-shares', label: 'Enumerate network shares', chips:['T1135','SMB'],
+              desc: 'List shared folders across the network to find sensitive data or pivot points.',
+              delta:{ noise:+12 },
+              log: 'Found finance share with broad read access.',
+              suricataLogs: [
+                {cat:'Policy', sig:'ET POLICY SMB Share Enumeration Activity', sid:'2009011', proto:'TCP', src:'172.16.2.55', spt:49421, dst:'172.16.2.3', dpt:445},
+                {cat:'Attempted Information Leak', sig:'ET SCAN NetBIOS/SMB Probing Detected', sid:'2008283', proto:'TCP', src:'172.16.2.55', spt:49428, dst:'172.16.2.3', dpt:445}
+              ],
+              next: 'actions'
+            },
+            {
+              id: 'wmi-hop', label: 'Hop via WMI/SMB', chips:['T1021','WMI'],
+              desc: 'Use Windows remote tools to execute commands on another machine and move laterally.',
+              delta:{ noise:+16 },
+              log: 'Laterally moved to file server using stolen creds.',
+              suricataLogs: [
+                {cat:'Policy', sig:'ET POLICY Remote Command Execution Over WMI', sid:'2022211', proto:'TCP', src:'172.16.2.55', spt:49612, dst:'172.16.2.3', dpt:135},
+                {cat:'Policy', sig:'ET POLICY SMB Admin Shares Access', sid:'2007777', proto:'TCP', src:'172.16.2.55', spt:49618, dst:'172.16.2.3', dpt:445}
+              ],
+              next: 'actions'
+            },
+            {
+              id: 'rdp-admin', label: 'Use RDP to admin box', chips:['T1021.001','RDP'],
+              desc: 'Open a remote desktop session to an administrator workstation for full, interactive control.',
+              delta:{ noise:+22 },
+              log: 'Interactive RDP session established.',
+              suricataLogs: [
+                {cat:'Policy', sig:'ET POLICY RDP Connection Established', sid:'2011222', proto:'TCP', src:'172.16.2.55', spt:49901, dst:'172.16.2.101', dpt:3389},
+                {cat:'Policy', sig:'ET POLICY Multiple RDP Authentication Attempts', sid:'2011333', proto:'TCP', src:'172.16.2.55', spt:49908, dst:'172.16.2.101', dpt:3389}
+              ],
+              next: 'actions'
+            },
+          ]
+        },
+        actions: {
+          title: 'Actions on Objectives',
+          tactic: 'TA0010 – Exfiltration / Impact',
+          guidance: 'Achieve the objective. Exfiltrate, persist, or impact systems, balancing speed with stealth.',
+          options: [
+            {
+              id: 'archive-exfil', label: 'Archive then exfiltrate', chips:['T1560','T1041'],
+              desc: 'Package data into an archive and send it out over HTTPS. Common for stealthy data theft.',
+              delta:{ noise:+18, loot:+2 },
+              lootItems: ['Stolen data archive', 'Successful data exfiltration'],
+              log: 'Zipped data and exfiltrated over HTTPS.',
+              suricataLogs: [
+                {cat:'Trojan Activity', sig:'ET TROJAN Potential Large Encrypted Outbound Data Transfer', sid:'2033001', proto:'TCP', src:'172.16.2.55', spt:50110, dst:'198.51.100.23', dpt:443},
+                {cat:'Policy', sig:'ET POLICY Possible Data Exfiltration Over TLS', sid:'2033002', proto:'TCP', src:'172.16.2.55', spt:50114, dst:'198.51.100.23', dpt:443}
+              ],
+              end: true
+            },
+            {
+              id: 'persistence-only', label: 'Lay low, set persistence', chips:['TA0003','T1053'],
+              desc: 'Set scheduled tasks or registry keys so you can come back later quietly without re-exploitation.',
+              delta:{ noise:+6, loot:+1 },
+              lootItems: ['Persistence mechanism established'],
+              log: 'Established scheduled task & registry run key.',
+              suricataLogs: [
+                {cat:'Info', sig:'Host persistence established (no immediate network IDS)', src:'-', spt:'-', dst:'-', dpt:'-'}
+              ],
+              end: true
+            },
+            {
+              id: 'ransom-notes', label: 'Detonate ransomware', chips:['TA0040','Impact'],
+              desc: 'Encrypt important files and drop ransom instructions to pressure payment. Very loud and disruptive.',
+              delta:{ noise:+40 },
+              log: 'Encrypted key shares; dropped ransom notes.',
+              suricataLogs: [
+                {cat:'Malware Activity', sig:'ET RANSOMWARE Suspicious SMB File Writes / Mass Encryption', sid:'2044444', proto:'TCP', src:'172.16.2.55', spt:50621, dst:'172.16.2.3', dpt:445},
+                {cat:'Policy', sig:'ET POLICY Unusual SMB Traffic Patterns', sid:'2004455', proto:'TCP', src:'172.16.2.55', spt:50628, dst:'172.16.2.3', dpt:445}
+              ],
+              end: true
+            },
+          ]
+        }
+      }
+    };
+
+    // --- Engine ---
+    const el = (sel)=>document.querySelector(sel);
+    const optionsEl = el('#options');
+    const stageTitleEl = el('#stageTitle');
+    const soFarLeftEl = el('#soFarLeft');
+    const soFarLeftMetaEl = el('#soFarLeftMeta');
+    const meterEl = el('#noiseBar');
+    const lootEl = el('#lootCount');
+    const lootItemsEl = el('#lootItems');
+    const logEl = el('#actionsLog');
+    const suricataLogEl = el('#suricataLog');
+    const mitreLogEl = el('#mitreLog');
+    const narrativeEl = el('#narrative');
+    const btnRestart = el('#btnRestart');
+
+    let state = {
+      stageKey: SCENARIO.start,
+      noise: 0,
+      loot: 0,
+      lootItems: [],
+      trail: [], // {stage,title,choice}
+      log: [], // text entries
+      mitre: [], // {t:Date.now(), stageTitle, tactic, techniques[]}
+      ended: false,
+      selectedTrailIdx: null,
+    };
+
+    function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+    function tacticName(tacticLabel){
+      // input examples:
+      // "TA0043 – Reconnaissance"
+      // "TA0002/TA0004 – Execution / PrivEsc"
+      // return "Reconnaissance", "Execution / PrivEsc"
+      if (!tacticLabel) return '';
+      const parts = String(tacticLabel).split('–');
+      if (parts.length >= 2) return parts.slice(1).join('–').trim();
+      return String(tacticLabel).trim();
+    }
+
+    function currentStageNumber(){
+      // While running, the UI shows the "next stage number" as trail.length+1 (because trail contains past choices).
+      // Once ended, there is no "next" stage; show the stage just completed.
+      return state.ended ? state.trail.length : (state.trail.length + 1);
+    }
+
+    function renderStatus(stage){
+      if (stageTitleEl) stageTitleEl.textContent = `Stage ${currentStageNumber()}: ${tacticName(stage.tactic)}`;
+      meterEl.style.width = clamp(state.noise,0,100)+"%";
+      lootEl.textContent = `${state.loot} ${state.loot===1? 'item':'items'}`;
+      if (lootItemsEl){
+        lootItemsEl.innerHTML = state.lootItems.length
+          ? state.lootItems.map(x=>`<div class="logline">• ${escapeHtml(x)}</div>`).join('')
+          : '—';
+      }
+      renderSoFarLeft();
+    }
+
+    function render(){
+      const stage = SCENARIO.stages[state.stageKey];
+      renderStatus(stage);
+
+      // narrative
+      updateNarrative(stage);
+
+      // options
+      optionsEl.innerHTML = '';
+      stage.options.forEach(opt=>{
+        const card = document.createElement('div');card.className='option';card.setAttribute('role','group');
+        const h3 = document.createElement('h3');h3.textContent = opt.label;card.appendChild(h3);
+        const chips = document.createElement('div');chips.className='chips';
+        opt.chips?.forEach(c=>{const s=document.createElement('span');s.className='chip';s.textContent=c;chips.appendChild(s)});
+        card.appendChild(chips);
+        if (opt.desc){
+          const desc = document.createElement('div');desc.className='muted';desc.textContent = opt.desc;card.appendChild(desc);
+        }
+        const actions=document.createElement('div');actions.className='actions';
+        const choose=document.createElement('button');choose.className='primary';choose.textContent='Choose';
+        choose.addEventListener('click',()=>chooseOption(opt));
+        actions.appendChild(choose);
+        const info=document.createElement('button');info.className='ghost';info.textContent='Preview impact';
+        info.addEventListener('click',()=>showPreview(opt));
+        actions.appendChild(info);
+        card.appendChild(actions);
+        optionsEl.appendChild(card);
+      });
+    }
+
+    function chooseOption(opt){
+      const stage = SCENARIO.stages[state.stageKey];
+      // apply deltas
+      const d = opt.delta || {};
+      state.noise = clamp(state.noise + (d.noise||0),0,100);
+      state.loot += (d.loot||0);
+      if ((d.loot||0) > 0){
+        const gained = normalizeLootItems(opt, d.loot||0);
+        state.lootItems.push(...gained);
+      }
+      // append example Suricata alerts into Suricata log (persistent)
+      if (opt.suricataLogs && opt.suricataLogs.length) {
+        pushSuricata(opt.suricataLogs);
+      }
+      // derived action(s) from Suricata telemetry
+      const derived = deriveActionsFromSuricata(stage, opt);
+      if (derived.length) {
+        derived.forEach(a => pushLog(a));
+      } else {
+        // fallback if no Suricata-like signal exists for this step
+        pushLog(`${opt.label} (no network IDS signal)`);
+      }
+      // MITRE techniques detected (from option chips + stage context)
+      pushMitreDetected(stage, opt);
+      state.trail.push({
+        stage: state.stageKey,
+        title: stage.title,
+        tactic: stage.tactic,
+        choice: opt.id,
+        choiceLabel: opt.label,
+        desc: opt.desc || '',
+        logText: opt.log || '',
+        chips: Array.isArray(opt.chips) ? opt.chips.slice() : [],
+        delta: opt.delta || {},
+      });
+
+      if(opt.end){
+        state.ended = true;
+        // ensure left pane reflects the final choice (loot, noise, and trail) before showing end UI
+        renderStatus(stage);
+        endScreen();
+        return;
+      }
+      // next stage
+      state.stageKey = opt.next || state.stageKey;
+      render();
+    }
+
+    function updateNarrative(stage){
+      if(!narrativeEl) return;
+      const nextText = stage.guidance || 'Choose your next step based on your objective.';
+
+      narrativeEl.innerHTML = `
+        <div class="muted" style="margin-top:10px"><span class="nextlabel">What to look for next:</span> ${escapeHtml(nextText)}</div>
+      `;
+    }
+
+    function renderSoFarLeft(){
+      if (!soFarLeftEl) return;
+      const recent = state.trail.slice(-5);
+      if (recent.length === 0){
+        soFarLeftEl.innerHTML = '';
+        if (soFarLeftMetaEl) soFarLeftMetaEl.textContent = '';
+        return;
+      }
+      const buttons = recent.map((t, iRecent)=>{
+        const idx = state.trail.length - recent.length + iRecent;
+        const label = t.choiceLabel || t.choice;
+        return `
+          <button class="trailbtn" type="button" data-trail-idx="${idx}" title="View details">
+            <span>${escapeHtml(label)}</span>
+            <span class="trailmeta">(${escapeHtml(t.title)})</span>
+          </button>
+        `;
+      }).join('');
+      soFarLeftEl.innerHTML = buttons;
+      if (soFarLeftMetaEl){
+        soFarLeftMetaEl.textContent = state.trail.length > recent.length
+          ? `Showing last ${recent.length} steps (of ${state.trail.length}).`
+          : '';
+      }
+    }
+
+    function showPreview(opt){
+      const d = opt.delta || {};
+      const after = clamp(state.noise + (d.noise||0),0,100);
+      const noiseText = d.noise ? (d.noise > 0 ? '+'+d.noise : d.noise) : '+0';
+      const lootText = d.loot ? ('+'+d.loot) : '+0';
+      const body = `
+        <h4>${escapeHtml(opt.label)}</h4>
+        ${opt.desc ? `<div class="row"><span class="muted">What this does:</span> ${escapeHtml(opt.desc)}</div>` : ''}
+        <div class="row"><span class="muted">Exposure change:</span> ${escapeHtml(String(noiseText))} → ${after}%</div>
+        <div class="row"><span class="muted">Objective artifacts:</span> ${escapeHtml(String(lootText))}</div>
+        ${opt.log ? `<div class="row"><span class="muted">Example outcome:</span> ${escapeHtml(opt.log)}</div>` : ''}
+      `;
+      openModal('previewModal', 'Preview impact', body);
+    }
+
+    function formatSuricataLine(item){
+      if (typeof item === 'string'){
+        return item;
+      }
+      const cat = item.cat || 'Alert';
+      const sig = item.sig || 'Unknown Signature';
+      const sid = item.sid ? ` sid:${item.sid}` : '';
+      const proto = item.proto ? ` ${item.proto}` : '';
+      const src = (item.src ?? '-') + (item.spt ? `:${item.spt}` : '');
+      const dst = (item.dst ?? '-') + (item.dpt ? `:${item.dpt}` : '');
+      return `[${cat}]${proto} ${src} -> ${dst} | ${sig}${sid}`;
+    }
+
+    function deriveActionsFromSuricata(stage, opt){
+      const items = Array.isArray(opt?.suricataLogs) ? opt.suricataLogs : [];
+      if (!items.length) return [];
+
+      const actions = [];
+      const seen = new Set();
+
+      const add = (s)=>{
+        const key = String(s || '').trim();
+        if (!key) return;
+        if (seen.has(key)) return;
+        seen.add(key);
+        actions.push(key);
+      };
+
+      const inferFrom = (cat, sig)=>{
+        const c = String(cat || '').toLowerCase();
+        const s = String(sig || '').toLowerCase();
+
+        if (s.includes('no ids alert') || s.includes('no network ids alert')) return 'No network IDS alert generated (activity may be off-network or host-only).';
+        if (s.includes('preparation step')) return 'Prepared targeting/materials (no direct network interaction).';
+        if (s.includes('osint')) return 'Performed OSINT/credential reconnaissance off-network.';
+
+        if (s.includes('nmap') || s.includes('scan')) return 'Conducted network scanning against the target.';
+        if (s.includes('share enumeration') || s.includes('smb share enumeration')) return 'Enumerated SMB shares to locate accessible data.';
+        if (s.includes('netbios') || s.includes('smb probing')) return 'Probed internal hosts/services over SMB/NetBIOS.';
+
+        if (s.includes('brute force') || s.includes('multiple auth failures')) return 'Attempted credential attack (password spraying/brute force) against VPN authentication.';
+        if (s.includes('macro') || s.includes('office')) return 'Delivered a malicious document leading to macro-based execution and payload retrieval.';
+        if (s.includes('powershell') && (s.includes('encoded') || s.includes('noninteractive'))) return 'Executed obfuscated PowerShell consistent with post-compromise execution.';
+
+        if (s.includes('possible exploit') || s.includes('suspicious http') || s.includes('web_application') || s.includes('web_server')) {
+          return 'Attempted exploitation of a web-facing service over HTTPS.';
+        }
+
+        if (s.includes('rdp')) return 'Established/attempted RDP access to a remote host (interactive control).';
+        if (s.includes('wmi')) return 'Performed remote command execution via WMI (lateral movement).';
+        if (s.includes('admin shares')) return 'Accessed SMB admin shares (possible lateral movement).';
+
+        if (s.includes('exfiltration') || s.includes('large encrypted outbound') || s.includes('outbound data transfer')) {
+          return 'Transferred data outbound over encrypted channels (potential exfiltration).';
+        }
+
+        if (s.includes('ransomware') || s.includes('mass encryption') || s.includes('ransom')) {
+          return 'Performed mass file modifications consistent with ransomware impact.';
+        }
+
+        if (c.includes('policy') || c.includes('info')) return `Observed telemetry: ${sig || 'activity'}.'`.replace(".'",".");
+        return `Detected: ${sig || 'suspicious activity'}.`;
+      };
+
+      items.forEach((it)=>{
+        if (typeof it === 'string'){
+          add(inferFrom('', it));
+          return;
+        }
+        add(inferFrom(it.cat, it.sig));
+      });
+
+      // keep it compact
+      return actions.slice(0, 3);
+    }
+
+    function pushMitreDetected(stage, opt){
+      if(!mitreLogEl) return;
+      const now = new Date().toLocaleTimeString();
+      const chips = Array.isArray(opt?.chips) ? opt.chips : [];
+      const techniques = chips.filter(c => typeof c === 'string' && /^T\d+/.test(c));
+      const tacticChips = chips.filter(c => typeof c === 'string' && /^TA\d+/.test(c));
+
+      // Build a compact, readable entry:
+      // "External Reconnaissance • Reconnaissance — T1595, T1589"
+      const tactic = stage?.tactic ? tacticName(stage.tactic) : '';
+      const left = stage?.title || 'Stage';
+      const mid = tactic ? ` • ${tactic}` : '';
+      const codes = [...techniques, ...tacticChips];
+      const right = codes.length ? ` — ${codes.join(', ')}` : '';
+
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.innerHTML = `<div class="time">${now}</div><div class="logline">${escapeHtml(`${left}${mid}${right}`)}</div>`;
+      mitreLogEl.appendChild(div);
+      mitreLogEl.scrollTop = mitreLogEl.scrollHeight;
+      state.mitre.push({ t: Date.now(), stageTitle: left, tactic, techniques, chips });
+    }
+
+    function normalizeLootItems(opt, count){
+      const explicit = Array.isArray(opt?.lootItems) ? opt.lootItems.filter(x=>typeof x === 'string' && x.trim()) : [];
+      if (explicit.length){
+        // If caller says loot:+2 but only provided 1 name, repeat the last as needed.
+        const out = explicit.slice(0);
+        while (out.length < count) out.push(out[out.length-1]);
+        return out.slice(0, count);
+      }
+      // fallback: generate generic names derived from the option label
+      const base = (opt?.label ? String(opt.label) : 'Loot gained').trim();
+      const out = [];
+      for (let i=0;i<count;i++){
+        out.push(count > 1 ? `${base} (${i+1}/${count})` : base);
+      }
+      return out;
+    }
+
+    function pushLog(text){
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className='entry';
+      div.innerHTML = `<div class="time">${time}</div><div>${escapeHtml(text)}</div>`;
+      logEl.appendChild(div);
+      logEl.scrollTop = logEl.scrollHeight;
+      state.log.push({t:Date.now(), text});
+    }
+
+    function pushSuricata(items){
+      if(!suricataLogEl) return;
+      const now = new Date().toLocaleTimeString();
+      (items || []).forEach(item=>{
+        const text = formatSuricataLine(item);
+        const div = document.createElement('div');
+        div.className='entry';
+        div.innerHTML = `<div class="time">${now}</div><div class="logline">${escapeHtml(text)}</div>`;
+        suricataLogEl.appendChild(div);
+      });
+      suricataLogEl.scrollTop = suricataLogEl.scrollHeight;
+    }
+
+    function escapeHtml(s){
+      return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+    }
+
+    function endScreen(){
+      const score = Math.max(0, 100 - state.noise) + state.loot*10;
+      optionsEl.innerHTML = '';
+      const card = document.createElement('div');card.className='option';
+      const h3 = document.createElement('h3');h3.textContent = 'Scenario complete';
+      const p = document.createElement('p');p.innerHTML = `Scenario exposure ended at <b>${state.noise}%</b>. Objective artifacts: <b>${state.loot}</b>.\n`+
+        `Scenario score: <b>${score}</b>.`;
+      card.appendChild(h3);card.appendChild(p);
+      const actions=document.createElement('div');actions.className='actions';
+      const restart=document.createElement('button');restart.textContent='Restart';restart.addEventListener('click',restartRun);
+      actions.appendChild(restart);
+      card.appendChild(actions);
+      optionsEl.appendChild(card);
+      pushLog(`Scenario ended. Scenario score=${score}.`);
+    }
+
+    function restartRun(){
+      state = { stageKey: SCENARIO.start, noise:0, loot:0, lootItems:[], trail:[], log:[], mitre:[], ended:false };
+      logEl.innerHTML='';
+      if (suricataLogEl) suricataLogEl.innerHTML='';
+      if (mitreLogEl) mitreLogEl.innerHTML='';
+      if (lootItemsEl) lootItemsEl.innerHTML='—';
+      render();
+    }
+
+    // keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='r'){ restartRun(); }
+      if(e.key.toLowerCase()==='l'){ logEl.focus(); }
+    });
+
+    // buttons
+    if (btnRestart) btnRestart.addEventListener('click', restartRun);
+
+    // --- Modals ---
+    function ensureModal(id, ariaLabel){
+      let modal = document.getElementById(id);
+      if (modal) return modal;
+      const bodyId = `${id}Body`;
+      modal = document.createElement('div');
+      modal.id = id;
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="backdrop" data-close="1"></div>
+        <div class="dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(ariaLabel || 'Dialog')}">
+          <button class="close" type="button" title="Close" data-close="1">×</button>
+          <div id="${bodyId}"></div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', (e)=>{
+        const target = e.target;
+        if (target && target.getAttribute && target.getAttribute('data-close') === '1'){
+          closeModal(id);
+        }
+      });
+      return modal;
+    }
+
+    function openModal(id, ariaLabel, innerHtml){
+      ensureModal(id, ariaLabel);
+      const bodyEl = document.getElementById(`${id}Body`);
+      if (bodyEl) bodyEl.innerHTML = innerHtml || '';
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('open');
+    }
+
+    function closeModal(id){
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('open');
+    }
+
+    function openTrailModal(idx){
+      if (idx == null || idx < 0 || idx >= state.trail.length) return;
+      const t = state.trail[idx];
+      const d = t.delta || {};
+      const noiseDelta = d.noise ? (d.noise > 0 ? `+${d.noise}` : `${d.noise}`) : '+0';
+      const lootDelta = d.loot ? (d.loot > 0 ? `+${d.loot}` : `${d.loot}`) : '+0';
+      const chips = (t.chips || []).map(c => `<span class="chip">${escapeHtml(c)}</span>`).join('');
+      const body = `
+        <h4>${escapeHtml(t.choiceLabel || t.choice)}</h4>
+        <div class="muted">${escapeHtml(t.title)} • ${escapeHtml(t.tactic || '')}</div>
+        ${chips ? `<div class="chips" style="margin-top:10px">${chips}</div>` : ''}
+        ${t.desc ? `<div class="row"><span class="muted">Description:</span> ${escapeHtml(t.desc)}</div>` : ''}
+        ${t.logText ? `<div class="row"><span class="muted">Outcome:</span> ${escapeHtml(t.logText)}</div>` : ''}
+        <div class="row"><span class="muted">Impact:</span> Exposure ${escapeHtml(String(noiseDelta))}, objective artifacts ${escapeHtml(String(lootDelta))}</div>
+      `;
+      openModal('trailModal', 'Step details', body);
+    }
+
+    if (soFarLeftEl){
+      soFarLeftEl.addEventListener('click', (e)=>{
+        const btn = e.target.closest?.('[data-trail-idx]');
+        if (!btn) return;
+        const idx = Number(btn.getAttribute('data-trail-idx'));
+        if (!Number.isFinite(idx)) return;
+        openTrailModal(idx);
+      });
+    }
+
+    document.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape'){
+        document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
+      }
+    });
+
+    // init
+    render();
+  </script>
+</body>
+</html>

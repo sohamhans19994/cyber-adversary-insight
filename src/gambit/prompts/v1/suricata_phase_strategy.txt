@@ -1,0 +1,109 @@
+
+        1. Time Delta Heuristic
+
+            "Is this entry much later than the previous one?"
+
+        Look at:
+
+            timestamp gap between this log and the previous one
+
+            Common threshold: >30-60 seconds
+
+        Why: Attack phases often pause between tool switches or operator actions.
+
+        ⟶ Large gap? Possible new phase.
+        2. Source/Destination IP or Subnet Change
+
+            "Is the attacker talking to a new system?"
+
+        Look at:
+
+            src_ip, dest_ip (did either change?)
+
+            Different subnet (e.g., 172.16.1.X → 192.168.1.X)
+
+        Why: A pivot to a new target is a classic phase transition (e.g., recon → lateral movement).
+
+        ⟶ New target range? Likely new phase.
+        3. Change in Application Protocol or Port
+
+            "Has the attacker switched tools or services?"
+
+        Look at:
+
+            proto, app_proto, dest_port
+
+        Examples:
+
+            ICMP → TCP (scan → access)
+
+            SMB → RDP (lateral → data staging)
+
+        ⟶ Protocol/port change? Very likely new phase.
+        4. Change in Alert Signature or Category
+
+            "Is the type of alert different from before?"
+
+        Look at:
+
+            alert.signature, alert.category, signature_id
+
+        If this entry triggers a different Suricata alert category, it's a strong indicator:
+
+            Attempted Admin → Malware Activity
+
+            Network Scan → User Privilege Gain
+
+        ⟶ Signature shift? Phase change likely.
+        5. Flow Change
+
+            "Is this a new connection?"
+
+        Look at:
+
+            flow_id
+
+            community_id (if used)
+
+        New flow_id implies new TCP/UDP session — not always a new phase, but:
+
+            If it comes with a new IP, port, or alert → stronger signal.
+
+        ⟶ New flow + other changes = likely new phase.
+        6. ⬅️ Direction Switch
+
+            "Has the direction flipped?"
+
+        Look at:
+
+            direction (to_server ↔ to_client)
+
+        Often means:
+
+            Server is responding → exploit succeeded
+
+            Reverse shell opened → new phase
+
+        ⟶ Direction flip? Phase transition possible.
+        7. New File or Payload Behavior
+
+            "Is this the first log with a file or large payload?"
+
+        Look at:
+
+            files column
+
+            payload_printable
+
+        If previous entries had no payloads or files, but this one does → indicates:
+
+            File drop
+
+            Malware execution
+
+            C2 beacon
+
+        ⟶ File activity starts? Possible phase marker.
+
+
+        If 3 or more of these change significantly compared to the last 5 entries, a human would likely conclude:

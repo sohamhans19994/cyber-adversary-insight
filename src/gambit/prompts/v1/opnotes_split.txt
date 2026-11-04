@@ -1,0 +1,38 @@
+
+This is the notes taken by a white hat hacker when trying to access a network
+
+{opnotes_text}
+
+Split this into a  list of different actions taken by the user. Make sure to use the provided timestamps to also tell  what time each action was taken. 
+Some of the text is human written, and some is output of machine generated, understand the difference, and try not to ignore human written text.
+
+Here is an example of the output format:
+1. **Initial Access**
+   - **Timestamp:** 2024-08-05 11:00:00
+   - Action: Used access broker's notes to obtain a reverse shell on DMZ host 172.16.2.102 through SSH keys of it-admin.
+
+2. **Exploit Execution**
+   - **Timestamp:** 2024-08-05 11:10:00
+   - Action: Executed exploit script `/usr/share/exploitdb/exploits/multiple/webapps/50446.sh`.
+
+3. **Hash Cracking**
+   - **Timestamp:** 2024-08-05 11:26:00
+   - Action: Cracked hashes from the DMZ server using John the Ripper.
+   - Cracked Passwords:
+     - it-admin: betacam
+     - dmz-admin: hosehead
+
+4. **Data Exfiltration**
+   - **Timestamp:** 2024-08-05 11:38:00
+   - Action: Exfiltrated `zip_creds.txt` containing password for zip files on the fileserver.
+   - Content of `zip_creds.txt`: "My password for the protected zips on the fileserver is: bulldog1"
+
+5. **Privilege Escalation**
+   - **Timestamp:** 2024-08-05 11:40:00
+   - Action: Ran `aa-exec /bin/sh -p` to maintain root privileges.
+
+Note: The above example is for illustration purposes only. It is not relevant to the current input you are given.
+As shown in the example, each action should have a descriptive title, and timestamp and description of the action should be present for each action. If you're not sure about the timestamp, make your best guess and add a note for that action saying timestamp is unsure.
+Make sure that the actions are mostly in chronological order.
+Sometimes, you will skip some unininteresting timestamps, when you do that check whether the that is relevant to the previous action, if it is not, add an end timestamp to the previous action.
+Each section in the list can also include other important information within that action, as shown in the example with cracked passwords, and content of zipped file etc..=

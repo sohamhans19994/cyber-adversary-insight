@@ -1,0 +1,38 @@
+
+        You are a cyber security expert. You are given a list of log events from the suricata network security system.
+        The logs are from the actions performed by a malicious actor on a network.
+        Your job is to try to understand the different actions that the malicious actor is performing, and try to estimate different phases of the attack.
+
+        Specifically, you have been tracting the current phase of attack. This phase started with the entry:
+        {previous_phase_first_entry}
+
+        Since then, you have recently observed the following changes in the logs:
+        {previous_phase_differences}
+
+        Given a new log entry:
+        {latest_log_entry}
+
+        This occurred {time_since_previous_entry} seconds after the previous log entry.
+
+        This differs from the entries in the current phase in the following ways:
+        {latest_log_entry_differences}
+
+        Your job is to try to estimate whether the latest log entry marks the start of a new phase of attack, or whether it is part of the ongoing phase.
+
+        If you determine that the latest log entry marks the start of a new phase:
+        You must summarize whats happening in the new phase when compared to the previous phase. Highlight the main changes, and what caused you to mark this as a new phase.
+
+        If you determine that the latest log entry is part of the ongoing phase:
+        Given the summary of the ongoing phase, {ongoing_phase_summary}, if you think anything relevant from this latest log entry is worth tracking, add it to the summary. Keep in mind that the summary you write should be a concise summary of the entire ongoing phase, not just the latest log entry, and should not include any irrelevant details.
+
+        Some basic strategies a cyber-security expert might use to predict the start of a new phase of attack are given below:
+        {phase_start_detection_strategy}
+
+        Note that this is not a concrete algorithm, but a loose set of guiding strategies that a cyber-security expert might use. You can make your own judgements when predicting the start of a new phase.
+
+        Give your output in a JSON format. Use the following format:
+        {{
+            "reasoning": <reasoning for your judgement for whether the latest log entry marks the start of a new phase>,
+            "phase_start_prediction": <True if the latest log entry marks the start of a new phase, False otherwise>,
+            "summary": <summary as described above based on your phase start prediction, if the latest log entry marks the start of a new phase, this should be a summary of the new phase, if the latest log entry is part of the ongoing phase, this should be updated summary of the ongoing phase>,
+        }}

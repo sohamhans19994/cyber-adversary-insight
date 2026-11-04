@@ -1,0 +1,12 @@
+
+For the given action taken by a white hat hacker in accessing a network, 
+
+{action}
+
+Answer the following using a json format:
+Is_Lateral_Movement: whether or not the action taken corresponds to a lateral movement technique.
+Lateral_Movement_technique_ID: the ID of the lateral movement technique that corresponds to the action taken. This will be null if the action does not correspond to a lateral movement technique.
+Lateral_Movement_technique_name: the name of the lateral movement technique that corresponds to the action taken. This will be null if the action does not correspond to a lateral movement technique.
+Reasoning: the reasoning behind the answer.
+
+Answer in json format only. No additional text or formatting.

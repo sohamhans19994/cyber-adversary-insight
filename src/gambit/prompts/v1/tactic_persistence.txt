@@ -1,0 +1,12 @@
+
+For the given action taken by a white hat hacker in accessing a network, 
+
+{action}
+
+Answer the following using a json format:
+Is_Persistence: whether or not the action taken corresponds to a persistence technique.
+Persistence_technique_ID: the ID of the persistence technique that corresponds to the action taken. This will be null if the action does not correspond to a persistence technique.
+Persistence_technique_name: the name of the persistence technique that corresponds to the action taken. This will be null if the action does not correspond to a persistence technique.
+Reasoning: the reasoning behind the answer.
+
+Answer in json format only. No additional text or formatting.

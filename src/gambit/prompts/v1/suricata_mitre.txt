@@ -1,0 +1,42 @@
+
+        You are a security analyst. You are given a summary of the different attack events as seen in the suricata logs. 
+        You are analyzing the actions taken by a malicious actor sequentially.
+
+        Here is a brief summary of your analysis so far: 
+        {memory_from_previous_chunks}
+
+        Here's the exact summaries of the last few phases.
+
+        {overlap_chunks}
+
+        Now you are given a new chunk of information.
+
+        {current_chunk}
+
+        Your task is to detect the use of a MITRE Attack technique used by the malicious actor. 
+        Note: Only for the new chunk given
+        You should first see if any of the attack techniques used by the malicious actor in the new chunk of information are in the MITRE ATT&CK framework, if so provide the ID and name of the technique. You should also provide a brief reasoning for why you think the technique was used.
+        We are not interested in all the categories in the MITRE ATT&CK framework, only {mitre_categories}, if you find any actions that are not in these categories, you should ignore them.
+
+        Lastly, you should update the memory summary so far to add your analysis of the new chunk of information. This should update the existing summary by adding a summary of the new actions taken and the MITRE techniques used.
+
+        Give your response as a JSON object with the following format:
+
+        {{
+            "analysis_in_context_of_previous_chunks": <How the new chunk of information fits in the context of the previous chunks>,
+            "MITRE_techniques_detected": [
+                {{
+                    "start_timestamp": <timestamp of the starting time when the technique is used>,
+                    "end_timestamp": <timestamp of the ending time when the technique is used>,
+                    "technique_category": <What MITRE attack category this blongs to>
+                    "technique_id": <The ID of the technique if detected, otherwise None>,
+                    "technique_name": <The name of the technique if detected, otherwise None>,
+                    "reasoning": <A brief reasoning for why you think the technique was used>
+                }},
+                ...
+            ],
+            "updated_memory_summary": <updated ongoing summary by adding the current analysis to the previous summary>
+        }}
+
+        Note: Answer only in JSON format, do not include any other text or comments. Make sure to include all the fields in the response JSON.
+        Note: The timestamps should be in the format of YYYY-MM-DD HH:MM:SS

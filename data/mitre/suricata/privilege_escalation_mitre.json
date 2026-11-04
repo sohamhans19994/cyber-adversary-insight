@@ -1,0 +1,571 @@
+{
+    "MITRE Category": "Privilege Escalation",
+    "Description": "The adversary is trying to gain higher-level permissions.\nPrivilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities. Examples of elevated access include:\n\tSYSTEM/root level\n\tlocal administrator\n\tuser account with admin-like access\n\tuser accounts with access to specific system or perform specific function\nThese techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.",
+    "Category ID": "TA0004",
+    "Techniques":[
+        {
+            "ID": "T1548",
+            "name": "Abuse Elevation Control Mechanism",
+            "description": "Adversaries may circumvent mechanisms designed to control elevate privileges to gain higher-level permissions. Most modern systems contain native elevation control mechanisms that are intended to limit privileges that a user can perform on a machine. Authorization has to be granted to specific users in order to perform tasks that can be considered of higher risk. An adversary can perform several methods to take advantage of built-in control mechanisms in order to escalate privileges on a system.",
+            "subtechniques": [
+                {
+                    "ID": "T1548.001",
+                    "name": "Setuid and Setgid",
+                    "description": "An adversary may abuse configurations where an application has the setuid or setgid bits set in order to get code running in a different (and possibly more privileged) user’s context. On Linux or macOS, when the setuid or setgid bits are set for an application binary, the application will run with the privileges of the owning user or group respectively. Normally an application is run in the current user’s context, regardless of which user or group owns the application. However, there are instances where programs need to be executed in an elevated context to function properly, but the user running them may not have the specific required privileges."
+                },
+                {
+                    "ID": "T1548.002",
+                    "name": "Bypass User Account Control",
+                    "description": "Adversaries may bypass UAC mechanisms to elevate process privileges on system. Windows User Account Control (UAC) allows a program to elevate its privileges (tracked as integrity levels ranging from low to high) to perform a task under administrator-level permissions, possibly by prompting the user for confirmation. The impact to the user ranges from denying the operation under high enforcement to allowing the user to perform the action if they are in the local administrators group and click through the prompt or allowing them to enter an administrator password to complete the action."
+                },
+                {
+                    "ID": "T1548.003",
+                    "name": "Sudo and Sudo Caching",
+                    "description": "Adversaries may perform sudo caching and/or use the sudoers file to elevate privileges. Adversaries may do this to execute commands as other users or spawn processes with higher privileges."
+                },
+                {
+                    "ID": "T1548.004",
+                    "name": "Elevated Execution with Prompt",
+                    "description": "Adversaries may leverage the AuthorizationExecuteWithPrivileges API to escalate privileges by prompting the user for credentials. The purpose of this API is to give application developers an easy way to perform operations with root privileges, such as for application installation or updating. This API does not validate that the program requesting root privileges comes from a reputable source or has been maliciously modified."
+                },
+                {
+                    "ID": "T1548.005",
+                    "name": "Temporary Elevated Cloud Access",
+                    "description": "Adversaries may abuse permission configurations that allow them to gain temporarily elevated access to cloud resources. Many cloud environments allow administrators to grant user or service accounts permission to request just-in-time access to roles, impersonate other accounts, pass roles onto resources and services, or otherwise gain short-term access to a set of privileges that may be distinct from their own."
+                },
+                {
+                    "ID": "T1548.006",
+                    "name": "TCC Manipulation",
+                    "description": "Adversaries can manipulate or abuse the Transparency, Consent, & Control (TCC) service or database to grant malicious executables elevated permissions. TCC is a Privacy & Security macOS control mechanism used to determine if the running process has permission to access the data or services protected by TCC, such as screen sharing, camera, microphone, or Full Disk Access (FDA)."
+                }
+            ]
+        },
+        {
+            "ID": "T1134",
+            "name": "Access Token Manipulation",
+            "description": "Adversaries may modify access tokens to operate under a different user or system security context to perform actions and bypass access controls. Windows uses access tokens to determine the ownership of a running process. A user can manipulate access tokens to make a running process appear as though it is the child of a different process or belongs to someone other than the user that started the process. When this occurs, the process also takes on the security context associated with the new token.",
+            "subtechniques": [
+                {
+                    "ID": "T1134.001",
+                    "name": "Token Impersonation/Theft",
+                    "description": "Adversaries may duplicate then impersonate another user's existing token to escalate privileges and bypass access controls. For example, an adversary can duplicate an existing token using DuplicateToken or DuplicateTokenEx. The token can then be used with ImpersonateLoggedOnUser to allow the calling thread to impersonate a logged on user's security context, or with SetThreadToken to assign the impersonated token to a thread."
+                },
+                {
+                    "ID": "T1134.002",
+                    "name": "Create Process with Token",
+                    "description": "Adversaries may create a new process with an existing token to escalate privileges and bypass access controls. Processes can be created with the token and resulting security context of another user using features such as CreateProcessWithTokenW and runas."
+                },
+                {
+                    "ID": "T1134.003",
+                    "name": "Make and Impersonate Token",
+                    "description": "Adversaries may make new tokens and impersonate users to escalate privileges and bypass access controls. For example, if an adversary has a username and password but the user is not logged onto the system the adversary can then create a logon session for the user using the LogonUser function. The function will return a copy of the new session's access token and the adversary can use SetThreadToken to assign the token to a thread."
+                },
+                {
+                    "ID": "T1134.004",
+                    "name": "Parent PID Spoofing",
+                    "description": "Adversaries may spoof the parent process identifier (PPID) of a new process to evade process-monitoring defenses or to elevate privileges. New processes are typically spawned directly from their parent, or calling, process unless explicitly specified. One way of explicitly assigning the PPID of a new process is via the CreateProcess API call, which supports a parameter that defines the PPID to use. This functionality is used by Windows features such as User Account Control (UAC) to correctly set the PPID after a requested elevated process is spawned by SYSTEM (typically via svchost.exe or consent.exe) rather than the current user context."
+                },
+                {
+                    "ID": "T1134.005",
+                    "name": "SID-History Injection",
+                    "description": "Adversaries may use SID-History Injection to escalate privileges and bypass access controls. The Windows security identifier (SID) is a unique value that identifies a user or group account. SIDs are used by Windows security in both security descriptors and access tokens. An account can hold additional SIDs in the SID-History Active Directory attribute, allowing inter-operable account migration between domains (e.g., all values in SID-History are included in access tokens)."
+                }
+            ]
+        },
+        {
+            "ID": "T1098",
+            "name": "Account Manipulation",
+            "description": "Adversaries may manipulate accounts to maintain and/or elevate access to victim systems. Account manipulation may consist of any action that preserves or modifies adversary access to a compromised account, such as modifying credentials or permission groups. These actions could also include account activity designed to subvert security policies, such as performing iterative password updates to bypass password duration policies and preserve the life of compromised credentials.",
+            "subtechniques": [
+                {
+                    "ID": "T1098.001",
+                    "name": "Additional Cloud Credentials",
+                    "description": "Adversaries may add adversary-controlled credentials to a cloud account to maintain persistent access to victim accounts and instances within the environment."
+                },
+                {
+                    "ID": "T1098.002",
+                    "name": "Additional Email Delegate Permissions",
+                    "description": "Adversaries may grant additional permission levels to maintain persistent access to an adversary-controlled email account."
+                },
+                {
+                    "ID": "T1098.003",
+                    "name": "Additional Cloud Roles",
+                    "description": "An adversary may add additional roles or permissions to an adversary-controlled cloud account to maintain persistent access to a tenant. For example, adversaries may update IAM policies in cloud-based environments or add a new global administrator in Office 365 environments. With sufficient permissions, a compromised account can gain almost unlimited access to data and settings (including the ability to reset the passwords of other admins)."
+                },
+                {
+                    "ID": "T1098.004",
+                    "name": "SSH Authorized Keys",
+                    "description": "Adversaries may modify the SSH authorized_keys file to maintain persistence on a victim host. Linux distributions, macOS, and ESXi hypervisors commonly use key-based authentication to secure the authentication process of SSH sessions for remote management. The authorized_keys file in SSH specifies the SSH keys that can be used for logging into the user account for which the file is configured. This file is usually found in the user's home directory under <user-home>/.ssh/authorized_keys (or, on ESXi, /etc/ssh/keys-<username>/authorized_keys). Users may edit the system’s SSH config file to modify the directives PubkeyAuthentication and RSAAuthentication to the value yes to ensure public key and RSA authentication are enabled, as well as modify the directive PermitRootLogin to the value yes to enable root authentication via SSH. The SSH config file is usually located under /etc/ssh/sshd_config."
+                },
+                {
+                    "ID": "T1098.005",
+                    "name": "Device Registration",
+                    "description": "Adversaries may register a device to an adversary-controlled account. Devices may be registered in a multifactor authentication (MFA) system, which handles authentication to the network, or in a device management system, which handles device access and compliance."
+                },
+                {
+                    "ID": "T1098.006",
+                    "name": "Additional Container Cluster Roles",
+                    "description": "An adversary may add additional roles or permissions to an adversary-controlled user or service account to maintain persistent access to a container orchestration system. For example, an adversary with sufficient permissions may create a RoleBinding or a ClusterRoleBinding to bind a Role or ClusterRole to a Kubernetes account. Where attribute-based access control (ABAC) is in use, an adversary with sufficient permissions may modify a Kubernetes ABAC policy to give the target account additional permissions."
+                },
+                {
+                    "ID": "T1098.007",
+                    "name": "Additional Local or Domain Groups",
+                    "description": "An adversary may add additional local or domain groups to an adversary-controlled account to maintain persistent access to a system or domain."
+                }
+            ]
+        },
+        {
+            "ID": "T1547",
+            "name": "Boot or Logon Autostart Execution",
+            "description": "Adversaries may configure system settings to automatically execute a program during system boot or logon to maintain persistence or gain higher-level privileges on compromised systems. Operating systems may have mechanisms for automatically running a program on system boot or account logon. These mechanisms may include automatically executing programs that are placed in specially designated directories or are referenced by repositories that store configuration information, such as the Windows Registry. An adversary may achieve the same goal by modifying or extending features of the kernel.",
+            "subtechniques": [
+                {
+                    "ID": "T1547.001",
+                    "name": "Registry Run Keys / Startup Folder",
+                    "description": "Adversaries may achieve persistence by adding a program to a startup folder or referencing it with a Registry run key. Adding an entry to the 'run keys' in the Registry or startup folder will cause the program referenced to be executed when a user logs in. These programs will be executed under the context of the user and will have the account's associated permissions level."
+                },
+                {
+                    "ID": "T1547.002",
+                    "name": "Authentication Package",
+                    "description": "Adversaries may abuse authentication packages to execute DLLs when the system boots. Windows authentication package DLLs are loaded by the Local Security Authority (LSA) process at system start. They provide support for multiple logon processes and multiple security protocols to the operating system."
+                },
+                {
+                    "ID": "T1547.003",
+                    "name": "Time Providers",
+                    "description": "Adversaries may abuse time providers to execute DLLs when the system boots. The Windows Time service (W32Time) enables time synchronization across and within domains. W32Time time providers are responsible for retrieving time stamps from hardware/network resources and outputting these values to other network clients."
+                },
+                {
+                    "ID": "T1547.004",
+                    "name": "Winlogon Helper DLL",
+                    "description": "Adversaries may abuse features of Winlogon to execute DLLs and/or executables when a user logs in. Winlogon.exe is a Windows component responsible for actions at logon/logoff as well as the secure attention sequence (SAS) triggered by Ctrl-Alt-Delete. Registry entries in HKLM\\Software[\\Wow6432Node\\]\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\ and HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\ are used to manage additional helper programs and functionalities that support Winlogon."
+                },
+                {
+                    "ID": "T1547.005",
+                    "name": "Security Support Provider",
+                    "description": "Adversaries may abuse security support providers (SSPs) to execute DLLs when the system boots. Windows SSP DLLs are loaded into the Local Security Authority (LSA) process at system start. Once loaded into the LSA, SSP DLLs have access to encrypted and plaintext passwords that are stored in Windows, such as any logged-on user's Domain password or smart card PINs."
+                },
+                {
+                    "ID": "T1547.006",
+                    "name": "Kernel Modules and Extensions",
+                    "description": "Adversaries may modify the kernel to automatically execute programs on system boot. Loadable Kernel Modules (LKMs) are pieces of code that can be loaded and unloaded into the kernel upon demand. They extend the functionality of the kernel without the need to reboot the system. For example, one type of module is the device driver, which allows the kernel to access hardware connected to the system."
+                },
+                {
+                    "ID": "T1547.007",
+                    "name": "Re-opened Applications",
+                    "description": "Adversaries may modify plist files to automatically run an application when a user logs in. When a user logs out or restarts via the macOS Graphical User Interface (GUI), a prompt is provided to the user with a checkbox to 'Reopen windows when logging back in'. When selected, all applications currently open are added to a property list file named com.apple.loginwindow.[UUID].plist within the ~/Library/Preferences/ByHost directory. Applications listed in this file are automatically reopened upon the user’s next logon."
+                },
+                {
+                    "ID": "T1547.008",
+                    "name": "LSASS Driver",
+                    "description": "Adversaries may modify or add LSASS drivers to obtain persistence on compromised systems. The Windows security subsystem is a set of components that manage and enforce the security policy for a computer or domain. The Local Security Authority (LSA) is the main component responsible for local security policy and user authentication. The LSA includes multiple dynamic link libraries (DLLs) associated with various other security functions, all of which run in the context of the LSA Subsystem Service (LSASS) lsass.exe process."
+                },
+                {
+                    "ID": "T1547.009",
+                    "name": "Shortcut Modification",
+                    "description": "Adversaries may create or modify shortcuts that can execute a program during system boot or user login. Shortcuts or symbolic links are used to reference other files or programs that will be opened or executed when the shortcut is clicked or executed by a system startup process."
+                },
+                {
+                    "ID": "T1547.010",
+                    "name": "Port Monitors",
+                    "description": "Adversaries may use port monitors to run an adversary supplied DLL during system boot for persistence or privilege escalation. A port monitor can be set through the AddMonitor API call to set a DLL to be loaded at startup. This DLL can be located in C:\\Windows\\System32 and will be loaded and run by the print spooler service, spoolsv.exe, under SYSTEM level permissions on boot."
+                },
+                {
+                    "ID": "T1547.012",
+                    "name": "Print Processors",
+                    "description": "Adversaries may abuse print processors to run malicious DLLs during system boot for persistence and/or privilege escalation. Print processors are DLLs that are loaded by the print spooler service, spoolsv.exe, during boot."
+                },
+                {
+                    "ID": "T1547.013",
+                    "name": "XDG Autostart Entries",
+                    "description": "Adversaries may add or modify XDG Autostart Entries to execute malicious programs or commands when a user’s desktop environment is loaded at login. XDG Autostart entries are available for any XDG-compliant Linux system. XDG Autostart entries use Desktop Entry files (.desktop) to configure the user’s desktop environment upon user login. These configuration files determine what applications launch upon user login, define associated applications to open specific file types, and define applications used to open removable media."
+                },
+                {
+                    "ID": "T1547.014",
+                    "name": "Active Setup",
+                    "description": "Adversaries may achieve persistence by adding a Registry key to the Active Setup of the local machine. Active Setup is a Windows mechanism that is used to execute programs when a user logs in. The value stored in the Registry key will be executed after a user logs into the computer. These programs will be executed under the context of the user and will have the account's associated permissions level."
+                },
+                {
+                    "ID": "T1547.015",
+                    "name": "Login Items",
+                    "description": "Adversaries may add login items to execute upon user login to gain persistence or escalate privileges. Login items are applications, documents, folders, or server connections that are automatically launched when a user logs in. Login items can be added via a shared file list or Service Management Framework. Shared file list login items can be set using scripting languages such as AppleScript, whereas the Service Management Framework uses the API call SMLoginItemSetEnabled."
+                }
+            ]
+        },
+        {
+            "ID": "T1037",
+            "name": "Boot or Logon Initialization Scripts",
+            "description": "Adversaries may use scripts automatically executed at boot or logon initialization to establish persistence. Initialization scripts can be used to perform administrative functions, which may often execute other programs or send information to an internal logging server. These scripts can vary based on operating system and whether applied locally or remotely.",
+            "subtechniques": [
+                {
+                    "ID": "T1037.001",
+                    "name": "Logon Script (Windows)",
+                    "description": "Adversaries may use Windows logon scripts automatically executed at logon initialization to establish persistence. Windows allows logon scripts to be run whenever a specific user or group of users log into a system. This is done via adding a path to a script to the HKCU\\Environment\\UserInitMprLogonScript Registry key."
+                },
+                {
+                    "ID": "T1037.002",
+                    "name": "Login Hook",
+                    "description": "Adversaries may use a Login Hook to establish persistence executed upon user logon. A login hook is a plist file that points to a specific script to execute with root privileges upon user logon. The plist file is located in the /Library/Preferences/com.apple.loginwindow.plist file and can be modified using the defaults command-line utility. This behavior is the same for logout hooks where a script can be executed upon user logout. All hooks require administrator permissions to modify or create hooks."
+                },
+                {
+                    "ID": "T1037.003",
+                    "name": "Network Logon Script",
+                    "description": "Adversaries may use network logon scripts automatically executed at logon initialization to establish persistence. Network logon scripts can be assigned using Active Directory or Group Policy Objects. These logon scripts run with the privileges of the user they are assigned to. Depending on the systems within the network, initializing one of these scripts could apply to more than one or potentially all systems."
+                },
+                {
+                    "ID": "T1037.004",
+                    "name": "RC Scripts",
+                    "description": "Adversaries may establish persistence by modifying RC scripts, which are executed during a Unix-like system’s startup. These files allow system administrators to map and start custom services at startup for different run levels. RC scripts require root privileges to modify."
+                },
+                {
+                    "ID": "T1037.005",
+                    "name": "Startup Items",
+                    "description": "Adversaries may use startup items automatically executed at boot initialization to establish persistence. Startup items execute during the final phase of the boot process and contain shell scripts or other executable files along with configuration information used by the system to determine the execution order for all startup items."
+                }
+            ]
+        },
+        {
+            "ID": "T1543",
+            "name": "Create or Modify System Process",
+            "description": "Adversaries may create or modify system-level processes to repeatedly execute malicious payloads as part of persistence. When operating systems boot up, they can start processes that perform background system functions. On Windows and Linux, these system processes are referred to as services. On macOS, launchd processes known as Launch Daemon and Launch Agent are run to finish system initialization and load user specific parameters.",
+            "subtechniques": [
+                {
+                    "ID": "T1543.001",
+                    "name": "Launch Agent",
+                    "description": "Adversaries may create or modify launch agents to repeatedly execute malicious payloads as part of persistence. When a user logs in, a per-user launchd process is started which loads the parameters for each launch-on-demand user agent from the property list (.plist) file found in /System/Library/LaunchAgents, /Library/LaunchAgents, and ~/Library/LaunchAgents. Property list files use the Label, ProgramArguments, and RunAtLoad keys to identify the Launch Agent's name, executable location, and execution time. Launch Agents are often installed to perform updates to programs, launch user specified programs at login, or to conduct other developer tasks."
+                },
+                {
+                    "ID": "T1543.002",
+                    "name": "Systemd Service",
+                    "description": "Adversaries may create or modify systemd services to repeatedly execute malicious payloads as part of persistence. Systemd is a system and service manager commonly used for managing background daemon processes (also known as services) and other system resources. Systemd is the default initialization (init) system on many Linux distributions replacing legacy init systems, including SysVinit and Upstart, while remaining backwards compatible."
+                },
+                {
+                    "ID": "T1543.003",
+                    "name": "Windows Service",
+                    "description": "Adversaries may create or modify Windows services to repeatedly execute malicious payloads as part of persistence. When Windows boots up, it starts programs or applications called services that perform background system functions. Windows service configuration information, including the file path to the service's executable or recovery programs/commands, is stored in the Windows Registry."
+                },
+                {
+                    "ID": "T1543.004",
+                    "name": "Launch Daemon",
+                    "description": "Adversaries may create or modify Launch Daemons to execute malicious payloads as part of persistence. Launch Daemons are plist files used to interact with Launchd, the service management framework used by macOS. Launch Daemons require elevated privileges to install, are executed for every user on a system prior to login, and run in the background without the need for user interaction. During the macOS initialization startup, the launchd process loads the parameters for launch-on-demand system-level daemons from plist files found in /System/Library/LaunchDaemons/ and /Library/LaunchDaemons/. Required Launch Daemons parameters include a Label to identify the task, Program to provide a path to the executable, and RunAtLoad to specify when the task is run. Launch Daemons are often used to provide access to shared resources, updates to software, or conduct automation tasks."
+                },
+                {
+                    "ID": "T1543.005",
+                    "name": "Container Service",
+                    "description": "Adversaries may create or modify container or container cluster management tools that run as daemons, agents, or services on individual hosts. These include software for creating and managing individual containers, such as Docker and Podman, as well as container cluster node-level agents such as kubelet. By modifying these services, an adversary may be able to achieve persistence or escalate their privileges on a host."
+                }
+            ]
+        },
+        {
+            "ID": "T1484",
+            "name": "Domain or Tenant Policy Modification",
+            "description": "Adversaries may modify the configuration settings of a domain or identity tenant to evade defenses and/or escalate privileges in centrally managed environments. Such services provide a centralized means of managing identity resources such as devices and accounts, and often include configuration settings that may apply between domains or tenants such as trust relationships, identity syncing, or identity federation.",
+            "subtechniques": [
+                {
+                    "ID": "T1484.001",
+                    "name": "Group Policy Modification",
+                    "description": "Adversaries may modify Group Policy Objects (GPOs) to subvert the intended discretionary access controls for a domain, usually with the intention of escalating privileges on the domain. Group policy allows for centralized management of user and computer settings in Active Directory (AD). GPOs are containers for group policy settings made up of files stored within a predictable network path \\<DOMAIN>\\SYSVOL\\<DOMAIN>\\Policies\\."
+                },
+                {
+                    "ID": "T1484.002",
+                    "name": "Trust Modification",
+                    "description": "Adversaries may add new domain trusts, modify the properties of existing domain trusts, or otherwise change the configuration of trust relationships between domains and tenants to evade defenses and/or elevate privileges. Trust details, such as whether or not user identities are federated, allow authentication and authorization properties to apply between domains or tenants for the purpose of accessing shared resources. These trust objects may include accounts, credentials, and other authentication material applied to servers, tokens, and domains."
+                }
+            ]
+        },
+        {
+            "ID": "T1611",
+            "name": "Escape to Host",
+            "description": "Adversaries may break out of a container or virtualized environment to gain access to the underlying host. This can allow an adversary access to other containerized or virtualized resources from the host level or to the host itself. In principle, containerized / virtualized resources should provide a clear separation of application functionality and be isolated from the host environment."
+        },
+        {
+            "ID": "T1546",
+            "name": "Event Triggered Execution",
+            "description": "Adversaries may establish persistence and/or elevate privileges using system mechanisms that trigger execution based on specific events. Various operating systems have means to monitor and subscribe to events such as logons or other user activity such as running specific applications/binaries. Cloud environments may also support various functions and services that monitor and can be invoked in response to specific cloud events.",
+            "subtechniques": [
+                {
+                    "ID": "T1546.001",
+                    "name": "Change Default File Association",
+                    "description": "Adversaries may establish persistence by executing malicious content triggered by a file type association. When a file is opened, the default program used to open the file (also called the file association or handler) is checked. File association selections are stored in the Windows Registry and can be edited by users, administrators, or programs that have Registry access or by administrators using the built-in assoc utility. Applications can modify the file association for a given file extension to call an arbitrary program when a file with the given extension is opened."
+                },
+                {
+                    "ID": "T1546.002",
+                    "name": "Screensaver",
+                    "description": "Adversaries may establish persistence by executing malicious content triggered by user inactivity. Screensavers are programs that execute after a configurable time of user inactivity and consist of Portable Executable (PE) files with a .scr file extension. The Windows screensaver application scrnsave.scr is located in C:\\Windows\\System32\\, and C:\\Windows\\sysWOW64\\ on 64-bit Windows systems, along with screensavers included with base Windows installations."
+                },
+                {
+                    "ID": "T1546.003",
+                    "name": "Windows Management Instrumentation Event Subscription",
+                    "description": "Adversaries may establish persistence and elevate privileges by executing malicious content triggered by a Windows Management Instrumentation (WMI) event subscription. WMI can be used to install event filters, providers, consumers, and bindings that execute code when a defined event occurs. Examples of events that may be subscribed to are the wall clock time, user login, or the computer's uptime."
+                },
+                {
+                    "ID": "T1546.004",
+                    "name": "Unix Shell Configuration Modification",
+                    "description": "Adversaries may establish persistence through executing malicious commands triggered by a user’s shell. User Unix Shells execute several configuration scripts at different points throughout the session based on events. For example, when a user opens a command-line interface or remotely logs in (such as via SSH) a login shell is initiated. The login shell executes scripts from the system (/etc) and the user’s home directory (~/) to configure the environment. All login shells on a system use /etc/profile when initiated. These configuration scripts run at the permission level of their directory and are often used to set environment variables, create aliases, and customize the user’s environment. When the shell exits or terminates, additional shell scripts are executed to ensure the shell exits appropriately."
+                },
+                {
+                    "ID": "T1546.005",
+                    "name": "Trap",
+                    "description": "Adversaries may establish persistence by executing malicious content triggered by an interrupt signal. The trap command allows programs and shells to specify commands that will be executed upon receiving interrupt signals. A common situation is a script allowing for graceful termination and handling of common keyboard interrupts like ctrl+c and ctrl+d."
+                },
+                {
+                    "ID": "T1546.006",
+                    "name": "LC_LOAD_DYLIB Addition",
+                    "description": "Adversaries may establish persistence by executing malicious content triggered by the execution of tainted binaries. Mach-O binaries have a series of headers that are used to perform certain operations when a binary is loaded. The LC_LOAD_DYLIB header in a Mach-O binary tells macOS and OS X which dynamic libraries (dylibs) to load during execution time. These can be added ad-hoc to the compiled binary as long as adjustments are made to the rest of the fields and dependencies. There are tools available to perform these changes."
+                },
+                {
+                    "ID": "T1546.007",
+                    "name": "Netsh Helper DLL",
+                    "description": "Adversaries may establish persistence by executing malicious content triggered by Netsh Helper DLLs. Netsh.exe (also referred to as Netshell) is a command-line scripting utility used to interact with the network configuration of a system. It contains functionality to add helper DLLs for extending functionality of the utility. The paths to registered netsh.exe helper DLLs are entered into the Windows Registry at HKLM\\SOFTWARE\\Microsoft\\Netsh."
+                },
+                {
+                    "ID": "T1546.008",
+                    "name": "Accessibility Features",
+                    "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by accessibility features. Windows contains accessibility features that may be launched with a key combination before a user has logged in (ex: when the user is on the Windows logon screen). An adversary can modify the way these programs are launched to get a command prompt or backdoor without logging in to the system."
+                },
+                {
+                    "ID": "T1546.009",
+                    "name": "AppCert DLLs",
+                    "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by AppCert DLLs loaded into processes. Dynamic-link libraries (DLLs) that are specified in the AppCertDLLs Registry key under HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Session Manager\\ are loaded into every process that calls the ubiquitously used application programming interface (API) functions CreateProcess, CreateProcessAsUser, CreateProcessWithLoginW, CreateProcessWithTokenW, or WinExec."
+                },
+                {
+                    "ID": "T1546.010",
+                    "name": "AppInit DLLs",
+                    "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by AppInit DLLs loaded into processes. Dynamic-link libraries (DLLs) that are specified in the AppInit_DLLs value in the Registry keys HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows or HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Windows NT\\CurrentVersion\\Windows are loaded by user32.dll into every process that loads user32.dll. In practice this is nearly every program, since user32.dll is a very common library."
+                },
+                {
+                    "ID": "T1546.011",
+                    "name": "Application Shimming",
+                    "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by application shims. The Microsoft Windows Application Compatibility Infrastructure/Framework (Application Shim) was created to allow for backward compatibility of software as the operating system codebase changes over time. For example, the application shimming feature allows developers to apply fixes to applications (without rewriting code) that were created for Windows XP so that it will work with Windows 10."
+                },
+                {
+                    "ID": "T1546.012",
+                    "name": "Image File Execution Options Injection",
+                    "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by Image File Execution Options (IFEO) debuggers. IFEOs enable a developer to attach a debugger to an application. When a process is created, a debugger present in an application’s IFEO will be prepended to the application’s name, effectively launching the new process under the debugger (e.g., C:\\dbg\\ntsd.exe -g  notepad.exe)."
+                },
+                {
+                    "ID": "T1546.013",
+                    "name": "PowerShell Profile",
+                    "description": "Adversaries may gain persistence and elevate privileges by executing malicious content triggered by PowerShell profiles. A PowerShell profile  (profile.ps1) is a script that runs when PowerShell starts and can be used as a logon script to customize user environments."
+                },
+                {
+                    "ID": "T1546.014",
+                    "name": "Emond",
+                    "description": "Adversaries may gain persistence and elevate privileges by executing malicious content triggered by the Event Monitor Daemon (emond). Emond is a Launch Daemon that accepts events from various services, runs them through a simple rules engine, and takes action. The emond binary at /sbin/emond will load any rules from the /etc/emond.d/rules/ directory and take action once an explicitly defined event takes place."
+                },
+                {
+                    "ID": "T1546.015",
+                    "name": "Component Object Model Hijacking",
+                    "description": "Adversaries may establish persistence by executing malicious content triggered by hijacked references to Component Object Model (COM) objects. COM is a system within Windows to enable interaction between software components through the operating system. References to various COM objects are stored in the Registry."
+                },
+                {
+                    "ID": "T1546.016",
+                    "name": "Installer Packages",
+                    "description": "Adversaries may establish persistence and elevate privileges by using an installer to trigger the execution of malicious content. Installer packages are OS specific and contain the resources an operating system needs to install applications on a system. Installer packages can include scripts that run prior to installation as well as after installation is complete. Installer scripts may inherit elevated permissions when executed. Developers often use these scripts to prepare the environment for installation, check requirements, download dependencies, and remove files after installation."
+                },
+                {
+                    "ID": "T1546.017",
+                    "name": "Udev Rules",
+                    "description": "Adversaries may maintain persistence through executing malicious content triggered using udev rules. Udev is the Linux kernel device manager that dynamically manages device nodes, handles access to pseudo-device files in the /dev directory, and responds to hardware events, such as when external devices like hard drives or keyboards are plugged in or removed. Udev uses rule files with match keys to specify the conditions a hardware event must meet and action keys to define the actions that should follow. Root permissions are required to create, modify, or delete rule files located in /etc/udev/rules.d/, /run/udev/rules.d/, /usr/lib/udev/rules.d/, /usr/local/lib/udev/rules.d/, and /lib/udev/rules.d/. Rule priority is determined by both directory and by the digit prefix in the rule filename."
+                }
+            ]
+        },
+        {
+            "ID": "T1068",
+            "name": "Exploitation for Privilege Escalation",
+            "description": "Adversaries may exploit software vulnerabilities in an attempt to elevate privileges. Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. Security constructs such as permission levels will often hinder access to information and use of certain techniques, so adversaries will likely need to perform privilege escalation to include use of software exploitation to circumvent those restrictions."
+        },
+        {
+            "ID": "T1574",
+            "name": "Hijack Execution Flow",
+            "description": "Adversaries may execute their own malicious payloads by hijacking the way operating systems run programs. Hijacking execution flow can be for the purposes of persistence, since this hijacked execution may reoccur over time. Adversaries may also use these mechanisms to elevate privileges or evade defenses, such as application control or other restrictions on execution.",
+            "subtechniques": [
+                {
+                    "ID": "T1574.001",
+                    "name": "DLL",
+                    "description": "Adversaries may abuse dynamic-link library files (DLLs) in order to achieve persistence, escalate privileges, and evade defenses. DLLs are libraries that contain code and data that can be simultaneously utilized by multiple programs. While DLLs are not malicious by nature, they can be abused through mechanisms such as side-loading, hijacking search order, and phantom DLL hijacking."
+                },
+                {
+                    "ID": "T1574.004",
+                    "name": "Dylib Hijacking",
+                    "description": "Adversaries may execute their own payloads by placing a malicious dynamic library (dylib) with an expected name in a path a victim application searches at runtime. The dynamic loader will try to find the dylibs based on the sequential order of the search paths. Paths to dylibs may be prefixed with @rpath, which allows developers to use relative paths to specify an array of search paths used at runtime based on the location of the executable. Additionally, if weak linking is used, such as the LC_LOAD_WEAK_DYLIB function, an application will still execute even if an expected dylib is not present. Weak linking enables developers to run an application on multiple macOS versions as new APIs are added."
+                },
+                {
+                    "ID": "T1574.005",
+                    "name": "Executable Installer File Permissions Weakness",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking the binaries used by an installer. These processes may automatically execute specific binaries as part of their functionality or to perform other actions. If the permissions on the file system directory containing a target binary, or permissions on the binary itself, are improperly set, then the target binary may be overwritten with another binary using user-level permissions and executed by the original process. If the original process and thread are running under a higher permissions level, then the replaced binary will also execute under higher-level permissions, which could include SYSTEM."
+                },
+                {
+                    "ID": "T1574.006",
+                    "name": "Dynamic Linker Hijacking",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking environment variables the dynamic linker uses to load shared libraries. During the execution preparation phase of a program, the dynamic linker loads specified absolute paths of shared libraries from various environment variables and files, such as LD_PRELOAD on Linux or DYLD_INSERT_LIBRARIES on macOS. Libraries specified in environment variables are loaded first, taking precedence over system libraries with the same function name. Each platform's linker uses an extensive list of environment variables at different points in execution. These variables are often used by developers to debug binaries without needing to recompile, deconflict mapped symbols, and implement custom functions in the original library."
+                },
+                {
+                    "ID": "T1574.007",
+                    "name": "Path Interception by PATH Environment Variable",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking environment variables used to load libraries. The PATH environment variable contains a list of directories (User and System) that the OS searches sequentially through in search of the binary that was called from a script or the command line."
+                },
+                {
+                    "ID": "T1574.008",
+                    "name": "Path Interception by Search Order Hijacking",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking the search order used to load other programs. Because some programs do not call other programs using the full path, adversaries may place their own file in the directory where the calling program is located, causing the operating system to launch their malicious software at the request of the calling program."
+                },
+                {
+                    "ID": "T1574.009",
+                    "name": "Path Interception by Unquoted Path",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking vulnerable file path references. Adversaries can take advantage of paths that lack surrounding quotations by placing an executable in a higher level directory within the path, so that Windows will choose the adversary's executable to launch."
+                },
+                {
+                    "ID": "T1574.010",
+                    "name": "Services File Permissions Weakness",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking the binaries used by services. Adversaries may use flaws in the permissions of Windows services to replace the binary that is executed upon service start. These service processes may automatically execute specific binaries as part of their functionality or to perform other actions. If the permissions on the file system directory containing a target binary, or permissions on the binary itself are improperly set, then the target binary may be overwritten with another binary using user-level permissions and executed by the original process. If the original process and thread are running under a higher permissions level, then the replaced binary will also execute under higher-level permissions, which could include SYSTEM."
+                },
+                {
+                    "ID": "T1574.011",
+                    "name": "Services Registry Permissions Weakness",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking the Registry entries used by services. Adversaries may use flaws in the permissions for Registry keys related to services to redirect from the originally specified executable to one that they control, in order to launch their own code when a service starts. Windows stores local service configuration information in the Registry under HKLM\\SYSTEM\\CurrentControlSet\\Services. The information stored under a service's Registry keys can be manipulated to modify a service's execution parameters through tools such as the service controller, sc.exe, PowerShell, or Reg. Access to Registry keys is controlled through access control lists and user permissions."
+                },
+                {
+                    "ID": "T1574.012",
+                    "name": "COR_PROFILER",
+                    "description": "Adversaries may leverage the COR_PROFILER environment variable to hijack the execution flow of programs that load the .NET CLR. The COR_PROFILER is a .NET Framework feature which allows developers to specify an unmanaged (or external of .NET) profiling DLL to be loaded into each .NET process that loads the Common Language Runtime (CLR). These profilers are designed to monitor, troubleshoot, and debug managed code executed by the .NET CLR."
+                },
+                {
+                    "ID": "T1574.013",
+                    "name": "KernelCallbackTable",
+                    "description": "Adversaries may abuse the KernelCallbackTable of a process to hijack its execution flow in order to run their own payloads. The KernelCallbackTable can be found in the Process Environment Block (PEB) and is initialized to an array of graphic functions available to a GUI process once user32.dll is loaded."
+                },
+                {
+                    "ID": "T1574.014",
+                    "name": "AppDomainManager",
+                    "description": "Adversaries may execute their own malicious payloads by hijacking how the .NET AppDomainManager loads assemblies. The .NET framework uses the AppDomainManager class to create and manage one or more isolated runtime environments (called application domains) inside a process to host the execution of .NET applications. Assemblies (.exe or .dll binaries compiled to run as .NET code) may be loaded into an application domain as executable code."
+                }
+            ]
+        },
+        {
+            "ID": "T1055",
+            "name": "Process Injection",
+            "description": "Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges. Process injection is a method of executing arbitrary code in the address space of a separate live process. Running code in the context of another process may allow access to the process's memory, system/network resources, and possibly elevated privileges. Execution via process injection may also evade detection from security products since the execution is masked under a legitimate process.",
+            "subtechniques": [
+                {
+                    "ID": "T1055.001",
+                    "name": "Dynamic-link Library Injection",
+                    "description": "Adversaries may inject dynamic-link libraries (DLLs) into processes in order to evade process-based defenses as well as possibly elevate privileges. DLL injection is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.002",
+                    "name": "Portable Executable Injection",
+                    "description": "Adversaries may inject portable executables (PE) into processes in order to evade process-based defenses as well as possibly elevate privileges. PE injection is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.003",
+                    "name": "Thread Execution Hijacking",
+                    "description": "Adversaries may inject malicious code into hijacked processes in order to evade process-based defenses as well as possibly elevate privileges. Thread Execution Hijacking is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.004",
+                    "name": "Asynchronous Procedure Call",
+                    "description": "Adversaries may inject malicious code into processes via the asynchronous procedure call (APC) queue in order to evade process-based defenses as well as possibly elevate privileges. APC injection is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.005",
+                    "name": "Thread Local Storage",
+                    "description": "Adversaries may inject malicious code into processes via thread local storage (TLS) callbacks in order to evade process-based defenses as well as possibly elevate privileges. TLS callback injection is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.008",
+                    "name": "Ptrace System Calls",
+                    "description": "Adversaries may inject malicious code into processes via ptrace (process trace) system calls in order to evade process-based defenses as well as possibly elevate privileges. Ptrace system call injection is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.009",
+                    "name": "Proc Memory",
+                    "description": "Adversaries may inject malicious code into processes via the /proc filesystem in order to evade process-based defenses as well as possibly elevate privileges. Proc memory injection is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.011",
+                    "name": "Extra Window Memory Injection",
+                    "description": "Adversaries may inject malicious code into process via Extra Window Memory (EWM) in order to evade process-based defenses as well as possibly elevate privileges. EWM injection is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.012",
+                    "name": "Process Hollowing",
+                    "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.013",
+                    "name": "Process Doppelgänging",
+                    "description": "Adversaries may inject malicious code into process via process doppelgänging in order to evade process-based defenses as well as possibly elevate privileges. Process doppelgänging is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.014",
+                    "name": "VDSO Hijacking",
+                    "description": "Adversaries may inject malicious code into processes via VDSO hijacking in order to evade process-based defenses as well as possibly elevate privileges. Virtual dynamic shared object (vdso) hijacking is a method of executing arbitrary code in the address space of a separate live process."
+                },
+                {
+                    "ID": "T1055.015",
+                    "name": "ListPlanting",
+                    "description": "Adversaries may abuse list-view controls to inject malicious code into hijacked processes in order to evade process-based defenses as well as possibly elevate privileges. ListPlanting is a method of executing arbitrary code in the address space of a separate live process. Code executed via ListPlanting may also evade detection from security products since the execution is masked under a legitimate process."
+                }
+            ]
+        },
+        {
+            "ID": "T1053",
+            "name": "Scheduled Task/Job",
+            "description": "Adversaries may abuse task scheduling functionality to facilitate initial or recurring execution of malicious code. Utilities exist within all major operating systems to schedule programs or scripts to be executed at a specified date and time. A task can also be scheduled on a remote system, provided the proper authentication is met (ex: RPC and file and printer sharing in Windows environments). Scheduling a task on a remote system typically may require being a member of an admin or otherwise privileged group on the remote system.",
+            "subtechniques": [
+                {
+                    "ID": "T1053.002",
+                    "name": "At",
+                    "description": "Adversaries may abuse the at utility to perform task scheduling for initial or recurring execution of malicious code. The at utility exists as an executable within Windows, Linux, and macOS for scheduling tasks at a specified time and date. Although deprecated in favor of Scheduled Task's schtasks in Windows environments, using at requires that the Task Scheduler service be running, and the user to be logged on as a member of the local Administrators group. In addition to explicitly running the at command, adversaries may also schedule a task with at by directly leveraging the Windows Management Instrumentation Win32_ScheduledJob WMI class."
+                },
+                {
+                    "ID": "T1053.003",
+                    "name": "Cron",
+                    "description": "Adversaries may abuse the cron utility to perform task scheduling for initial or recurring execution of malicious code. The cron utility is a time-based job scheduler for Unix-like operating systems. The crontab file contains the schedule of cron entries to be run and the specified times for execution. Any crontab files are stored in operating system-specific file paths."
+                },
+                {
+                    "ID": "T1053.005",
+                    "name": "Scheduled Task",
+                    "description": "Adversaries may abuse the Windows Task Scheduler to perform task scheduling for initial or recurring execution of malicious code. There are multiple ways to access the Task Scheduler in Windows. The schtasks utility can be run directly on the command line, or the Task Scheduler can be opened through the GUI within the Administrator Tools section of the Control Panel. In some cases, adversaries have used a .NET wrapper for the Windows Task Scheduler, and alternatively, adversaries have used the Windows netapi32 library and Windows Management Instrumentation (WMI) to create a scheduled task. Adversaries may also utilize the Powershell Cmdlet Invoke-CimMethod, which leverages WMI class PS_ScheduledTask to create a scheduled task via an XML path."
+                },
+                {
+                    "ID": "T1053.006",
+                    "name": "Systemd Timers",
+                    "description": "Adversaries may abuse systemd timers to perform task scheduling for initial or recurring execution of malicious code. Systemd timers are unit files with file extension .timer that control services. Timers can be set to run on a calendar event or after a time span relative to a starting point. They can be used as an alternative to Cron in Linux environments. Systemd timers may be activated remotely via the systemctl command line utility, which operates over SSH."
+                },
+                {
+                    "ID": "T1053.007",
+                    "name": "Container Orchestration Job",
+                    "description": "Adversaries may abuse task scheduling functionality provided by container orchestration tools such as Kubernetes to schedule deployment of containers configured to execute malicious code. Container orchestration jobs run these automated tasks at a specific date and time, similar to cron jobs on a Linux system. Deployments of this type can also be configured to maintain a quantity of containers over time, automating the process of maintaining persistence within a cluster."
+                }
+            ]
+        },
+        {
+            "ID": "T1078",
+            "name": "Valid Accounts",
+            "description": "Adversaries may obtain and abuse credentials of existing accounts as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Compromised credentials may be used to bypass access controls placed on various resources on systems within the network and may even be used for persistent access to remote systems and externally available services, such as VPNs, Outlook Web Access, network devices, and remote desktop. Compromised credentials may also grant an adversary increased privilege to specific systems or access to restricted areas of the network. Adversaries may choose not to use malware or tools in conjunction with the legitimate access those credentials provide to make it harder to detect their presence.",
+            "subtechniques": [
+                {
+                    "ID": "T1078.001",
+                    "name": "Default Accounts",
+                    "description": "Adversaries may obtain and abuse credentials of a default account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Default accounts are those that are built-into an OS, such as the Guest or Administrator accounts on Windows systems. Default accounts also include default factory/provider set accounts on other types of systems, software, or devices, including the root user account in AWS, the root user account in ESXi, and the default service account in Kubernetes."
+                },
+                {
+                    "ID": "T1078.002",
+                    "name": "Domain Accounts",
+                    "description": "Adversaries may obtain and abuse credentials of a domain account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Domain accounts are those managed by Active Directory Domain Services where access and permissions are configured across systems and services that are part of that domain. Domain accounts can cover users, administrators, and services."
+                },
+                {
+                    "ID": "T1078.003",
+                    "name": "Local Accounts",
+                    "description": "Adversaries may obtain and abuse credentials of a local account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service."
+                },
+                {
+                    "ID": "T1078.004",
+                    "name": "Cloud Accounts",
+                    "description": "Valid accounts in cloud environments may allow adversaries to perform actions to achieve Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Cloud accounts are those created and configured by an organization for use by users, remote support, services, or for administration of resources within a cloud service provider or SaaS application. Cloud Accounts can exist solely in the cloud; alternatively, they may be hybrid-joined between on-premises systems and the cloud through syncing or federation with other identity sources such as Windows Active Directory."
+                }
+            ]
+        }
+    ]
+}
